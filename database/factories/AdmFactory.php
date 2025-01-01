@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,13 @@ class AdmFactory extends Factory
      */
     public function definition(): array
     {
+        $id_user = User::all()->random()->id;
+
         return [
-            //
+            'user_id' => $id_user,
+            'status' => $this->faker->randomElement(['active', 'inactive']),
+            'work_start_date' => $this->faker->date(),
+            'work_end_date' => $this->faker->date(),
         ];
     }
 }

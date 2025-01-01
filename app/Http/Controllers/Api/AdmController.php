@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Models\Adm;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class AdmController extends Controller
+class AdmController extends Crud
 {
+
+    protected $model = 'Adm';
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return $this->indexGlobal($this->model, 'user');
     }
 
     /**
@@ -20,7 +24,7 @@ class AdmController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $this->storeGlobal($request, $this->model);
     }
 
     /**
@@ -42,8 +46,8 @@ class AdmController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Adm $adm)
     {
-        //
+        return $this->destroyGlobal($adm);
     }
 }

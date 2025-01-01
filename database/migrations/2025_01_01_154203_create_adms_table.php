@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('adms', function (Blueprint $table) {
             $table->id();
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->data('work_start_date');
-            $table->status('status')->default('active');
-            $table->data('work_end_date');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->date('work_start_date');
+            $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
+            $table->date('work_end_date');
             $table->timestamps();
         });
     }

@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('block')->nullable();
             $table->string('apartment')->nullable();
             $table->string('role')->nullable();
-            $table->int('age')->nullable();
+            $table->integer('age')->nullable();
             $table->timestamps();
         });
 

@@ -21,7 +21,21 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'email_verified_at',
         'password',
+        'phone',
+        'cpf',
+        'sex',
+        'birth',
+        'photo',
+        'place_of_birth',
+        'city',
+        'neighborhood',
+        'street',
+        'block',
+        'apartment',
+        'role',
+        'age'
     ];
 
     /**
@@ -45,5 +59,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function adm()
+    {
+        return $this->hasOne(Adm::class);
     }
 }

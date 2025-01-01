@@ -6,13 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class UserController extends Crud
 {
 
     /**
      * Display a listing of the resource.
      */
-    public function index() {}
+    public function index()
+    {
+        return $this->indexGlobal('User');
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -25,9 +28,9 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        return $this->showGlobal($user);
     }
 
     /**
@@ -41,8 +44,8 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        return $this->destroyGlobal($user);
     }
 }
