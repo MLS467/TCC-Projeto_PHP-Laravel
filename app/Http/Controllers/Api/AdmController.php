@@ -30,18 +30,20 @@ class AdmController extends Crud
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Adm $adm)
     {
-        //
+        return $this->showGlobal($adm, 'user');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Adm $adm)
     {
-        //
+        return $this->updateGlobal($request, $adm);
     }
+
+
 
     /**
      * Remove the specified resource from storage.

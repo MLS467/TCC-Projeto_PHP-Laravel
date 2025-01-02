@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\PatientModel as Patient;
 use Illuminate\Database\Seeder;
 
 class PatientSeed extends Seeder
@@ -12,6 +12,6 @@ class PatientSeed extends Seeder
      */
     public function run(): void
     {
-        //
+        Patient::factory(10)->create();
     }
 }

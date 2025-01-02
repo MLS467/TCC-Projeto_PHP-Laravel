@@ -9,4 +9,9 @@ class Attendant extends Model
 {
     /** @use HasFactory<\Database\Factories\AttendantFactory> */
     use HasFactory;
+
+    public function patient()
+    {
+        return $this->hasMany(PatientModel::class);
+    }
 }

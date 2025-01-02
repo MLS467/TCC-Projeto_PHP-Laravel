@@ -54,10 +54,12 @@ class Crud extends Controller
     /**
      * Display the specified resource.
      */
-    public function showGlobal($model)
+    public function showGlobal($model, $relacionamento = null)
     {
-        if ($model)
-            return response()->json(['status' => true, 'data' => $model], 200);
+        if ($model) {
+            $result = $relacionamento ?  $model->load($relacionamento) :   $model;
+            return response()->json(['status' => true, 'data' => $result], 200);
+        }
 
         return response()->json(['error' => 'Model not found', 'status' => false], 404);
     }
@@ -65,9 +67,21 @@ class Crud extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updateGlobal($request, $model)
     {
-        //
+        try {
+            $user_id = $model->user_id;
+
+            if (User::find($user_id)->update($request->all())) {
+                if ($model->update($request->all())) {
+                    return response()->json(['status' => true, 'message' => 'Adm updated successfully', 'data' => $model->load('user')], 200);
+                } else
+                    throw new \Exception("Error updating Adm {$this->$model->id}");
+            } else
+                throw new \Exception("Error updating User $user_id");
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => 'Error updating Adm 3', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -75,11 +89,8 @@ class Crud extends Controller
      */
     public function destroyGlobal($model)
     {
-
         if ($model->delete())
             return response()->json(['status' => true, 'message' => 'Model deleted successfully'], 200);
-
-
 
         return response()->json(['error' => 'Model not found', 'status' => false], 404);
     }
