@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class Crud extends Controller
@@ -16,7 +17,7 @@ class Crud extends Controller
         $modelClass = "App\\Models\\$model";
 
         if (class_exists($modelClass)) {
-            $relacionamento ? $modelClass = $modelClass::with($relacionamento)->get() : $modelClass = $modelClass::all();
+            $modelClass = $relacionamento !== null ?  $modelClass::with($relacionamento)->get() : $modelClass::all();
             return response()->json(['status' => true, 'data' => $modelClass], 200);
         }
 
@@ -35,10 +36,11 @@ class Crud extends Controller
                 return ['status' => 'error', 'message' => 'Class not found'];
             }
 
-            if ($user = User::create($request->all())) {
-                $request['user_id'] = $user->id;
+            $dataValidated = $request->validated();
+            if ($user = User::create($dataValidated)) {
+                $dataValidated['user_id'] = $user->id;
 
-                if ($modelClass::create($request->all())) {
+                if ($modelClass::create($dataValidated)) {
                     return ['status' => 'success', 'message' => 'Employee created successfully'];
                 } else {
                     throw new \Exception('Error creating Employee');
@@ -47,7 +49,7 @@ class Crud extends Controller
                 throw new \Exception('Error creating User');
             };
         } catch (\Exception $e) {
-            return ['status' => 'error', 'message' => 'Error creating Employee'];
+            return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
 
@@ -72,8 +74,9 @@ class Crud extends Controller
         try {
             $user_id = $model->user_id;
 
-            if (User::find($user_id)->update($request->all())) {
-                if ($model->update($request->all())) {
+            if (User::find($user_id)->update($request->validated())) {
+
+                if ($model->update($request->validated())) {
                     return response()->json(['status' => true, 'message' => 'Adm updated successfully', 'data' => $model->load('user')], 200);
                 } else
                     throw new \Exception("Error updating Adm {$this->$model->id}");

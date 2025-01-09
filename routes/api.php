@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
+Route::get('/user/patient', [UserController::class, 'UserPatient']);
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 Route::apiResource('/user', UserController::class);

@@ -11,18 +11,30 @@ class PatientModel extends Model
     protected $table = 'patients';
 
     protected $fillable = [
-        'id',
         'user_id',
-        'id_attendant',
-        'allegy',
+        'heart_rate',
+        'respiratory_rate',
+        'oxygen_saturation',
+        'temperature',
+        'chief_complaint',
+        'responsible_name',
+        'triage_flag',
+        'blood_type',
+        'difficulty_breathing',
+        'vomiting',
+        'edema',
+        'nausea',
+        'bleeding',
+        'emergency_phone',
         'sugery_history',
-        'emergency_contact',
-        'blood_type'
+        'allergy',
+        'blood_pressure',
+        'responsible_name',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function attendant()
     {

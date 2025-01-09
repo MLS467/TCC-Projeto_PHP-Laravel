@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserStoredRequest;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class UserController extends Crud
@@ -17,12 +19,28 @@ class UserController extends Crud
         return $this->indexGlobal('User');
     }
 
+    public function UserPatient()
+    {
+        return User::where('role', 'patient')->get();
+    }
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserStoredRequest $request)
     {
-        //
+
+        if (User::create($request->validated())) {
+            return response()->json([
+                'status' => true,
+                'message' => 'User created successfully'
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error creating user'
+            ], 400);
+        };
     }
 
     /**

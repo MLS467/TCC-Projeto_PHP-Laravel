@@ -13,13 +13,18 @@ return new class extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('id_attendant');
-            $table->foreign('id_attendant')->references('id')->on('attendants');
-            $table->string('blood_type')->nullable();
-            $table->string('allegy')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('emergency_phone')->nullable();
             $table->string('sugery_history')->nullable();
+            $table->string('allergy')->nullable();
+            $table->string('blood_type')->nullable();
+            $table->string('blood_pressure')->nullable();
+            $table->integer('heart_rate')->nullable();
+            $table->integer('respiratory_rate')->nullable();
+            $table->integer('oxygen_saturation')->nullable();
+            $table->float('temperature')->nullable();
+            $table->text('chief_complaint')->nullable();
+            $table->string('responsible_name')->nullable();
             $table->string('emergency_contact')->nullable();
             $table->timestamps();
         });

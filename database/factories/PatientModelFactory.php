@@ -23,11 +23,18 @@ class PatientModelFactory extends Factory
 
         return [
             'user_id' => $user_id,
-            'id_attendant' => $id_attendant,
             'allegy' => $this->faker->text(100),
             'sugery_history' => $this->faker->text(100),
             'blood_type' => $blood_type,
-            'emergency_contact' => $this->faker->phoneNumber
+            'blood_pressure' => $this->faker->randomFloat(2, 60, 200),
+            'heart_rate' => $this->faker->randomFloat(2, 60, 200),
+            'respiratory_rate' => $this->faker->randomFloat(2, 60, 200),
+            'oxygen_saturation' => $this->faker->randomFloat(2, 60, 200),
+            'temperature' => $this->faker->randomFloat(2, 60, 200),
+            'chief_complaint' => $this->faker->text(100),
+            'responsible_name' => $this->faker->name,
+            'emergency_phone' => $this->faker->phoneNumber,
+            'triage_flag' => 0,
         ];
     }
 }

@@ -35,7 +35,7 @@ class User extends Authenticatable
         'block',
         'apartment',
         'role',
-        'age'
+        'age',
     ];
 
     /**
