@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('edema')->default(0);
             $table->integer('nausea')->default(0);
             $table->integer('vomiting')->default(0);
+            $table->integer('flag_triage')->default(0);
         });
     }
 

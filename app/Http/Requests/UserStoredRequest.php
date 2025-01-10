@@ -23,6 +23,7 @@ class UserStoredRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'flag' => 'required|integer',
             'email' => 'required|email|max:255',
             'email_verified_at' => 'nullable|date',
             'password' => 'required|string|min:8',
@@ -90,6 +91,7 @@ class UserStoredRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
+            'flag' => 0,
             'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
             'password' => bcrypt(0),
         ]);

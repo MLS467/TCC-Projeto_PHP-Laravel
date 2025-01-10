@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('apartment')->nullable();
             $table->string('role')->nullable();
             $table->integer('age')->nullable();
+            $table->integer('flag')->default(0);
             $table->timestamps();
         });
 

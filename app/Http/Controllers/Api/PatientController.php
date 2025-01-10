@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
 use App\Models\PatientModel as Patient;
+use App\Models\User;
 
 class PatientController extends Crud
 {
@@ -19,13 +20,21 @@ class PatientController extends Crud
         return $this->indexGlobal($this->model, 'user');
     }
 
+    public function patientCompleted()
+    {
+        return Patient::where('flag_triage', 1)->get()->load('user');
+    }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(StorePatientRequest $request)
     {
         try {
+            $id_user = $request->user_id;
+
             if (Patient::create($request->validated())) {
+                User::find($id_user)->update(['flag' => '1']);
                 return response()->json([
                     'status' => true,
                     'message' => 'Patient created successfully'
@@ -57,8 +66,6 @@ class PatientController extends Crud
     {
         return $this->updateGlobal($request, $patient);
     }
-
-
 
     /**
      * Remove the specified resource from storage.

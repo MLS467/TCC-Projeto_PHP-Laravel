@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Consultation;
 use App\Http\Requests\StoreConsultationRequest;
 use App\Http\Requests\UpdateConsultationRequest;
+use Illuminate\Http\Request;
 
 class ConsultationController extends Controller
 {
@@ -14,15 +15,15 @@ class ConsultationController extends Controller
      */
     public function index()
     {
-        //
+        return Consultation::all();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreConsultationRequest $request)
+    public function store(Request $request)
     {
-        //
+        Consultation::create($request->all());
     }
 
     /**

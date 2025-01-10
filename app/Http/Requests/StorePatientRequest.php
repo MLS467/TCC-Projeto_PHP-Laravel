@@ -23,23 +23,24 @@ class StorePatientRequest extends FormRequest
     {
         return [
             'user_id' => 'required|integer',
+            'flag_triage' => 'required|integer',
             'heart_rate' => 'nullable|integer|min:0',
             'respiratory_rate' => 'nullable|integer|min:0',
             'oxygen_saturation' => 'nullable|integer|min:0|max:100',
-            'temperature' => 'nullable|numeric|min:25|max:45', // Faixa de temperatura corporal normal
+            'temperature' => 'nullable|numeric|min:25|max:45',
             'chief_complaint' => 'nullable|string|max:255',
             'responsible_name' => 'nullable|string|max:255',
+            'sugery_history' => 'nullable|string|max:500',
             'blood_type' => 'nullable|string|in:A+,A-,B+,B-,AB+,AB-,O+,O-',
             'blood_pressure' => 'nullable|numeric',
             'difficulty_breathing' => 'nullable|boolean',
             'vomiting' => 'nullable|boolean',
-            'sugery_history' => 'nullable|string|max:500',
+            'surgical_history' => 'nullable|string|max:500',
             'edema' => 'nullable|boolean',
             'nausea' => 'nullable|boolean',
             'bleeding' => 'nullable|boolean',
-            'surgical_history' => 'nullable|string|max:500', // Adicionei para permitir um histórico de texto
-            'allergy' => 'nullable|string|max:500',         // Adicionei para suportar descrições de alergias
-            'emergency_phone' => 'nullable|string|regex:/^\d{8,15}$/', // Verifica um telefone numérico de 8-15 dígitos
+            'allergy' => 'nullable|string|max:500',
+            'emergency_phone' => 'nullable|string|regex:/^\d{8,15}$/',
         ];
     }
 
@@ -79,6 +80,7 @@ class StorePatientRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
+            'flag_triage' => 1,
             'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
             'bleeding' => $this->has('bleeding')  ? 1 : 0,
             'difficulty_breathing' => $this->has('difficulty_breathing') ? 1 : 0,

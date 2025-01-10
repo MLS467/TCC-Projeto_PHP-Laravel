@@ -19,6 +19,11 @@ class UserController extends Crud
         return $this->indexGlobal('User');
     }
 
+    public function userFlag()
+    {
+        return User::where([['flag', '=', '0'], ['role', '=', 'patient']])->get();
+    }
+
     public function UserPatient()
     {
         return User::where('role', 'patient')->get();
