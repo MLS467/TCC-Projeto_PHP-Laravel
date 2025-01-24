@@ -15,9 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->date('work_start_date');
-            $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
-            $table->date('work_end_date');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }

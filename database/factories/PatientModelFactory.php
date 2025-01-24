@@ -17,8 +17,12 @@ class PatientModelFactory extends Factory
      */
     public function definition(): array
     {
-        $user_id = User::all()->random()->id;
-        $id_attendant = 1;
+        $selectedUsers = session()->get('selected_users', []);
+        $user_id = User::where('role', 'doctor')
+            ->whereNotIn('id', $selectedUsers)  // Garante que o usuário não foi selecionado
+            ->inRandomOrder()
+            ->first();
+
         $blood_type = $this->faker->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']);
 
         return [

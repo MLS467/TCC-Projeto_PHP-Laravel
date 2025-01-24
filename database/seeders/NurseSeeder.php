@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Nurse;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,6 @@ class NurseSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Nurse::factory(10)->create();
     }
 }

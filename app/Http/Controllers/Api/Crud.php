@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class Crud extends Controller
 {
@@ -72,7 +73,7 @@ class Crud extends Controller
     public function updateGlobal($request, $model)
     {
         try {
-            $user_id = $model->user_id;
+            $user_id = $model['user_id'];
 
             if (User::find($user_id)->update($request->validated())) {
 
@@ -92,9 +93,28 @@ class Crud extends Controller
      */
     public function destroyGlobal($model)
     {
-        if ($model->delete())
-            return response()->json(['status' => true, 'message' => 'Model deleted successfully'], 200);
+        try {
+            DB::transaction(function () use ($model) {
+                // Verifica se o modelo e o user_id são válidos
+                if (!$model || !$model['user_id']) {
+                    throw new \Exception("Invalid model or user ID");
+                }
 
-        return response()->json(['error' => 'Model not found', 'status' => false], 404);
+                $user = User::find($model['user_id']);
+
+                // Verifica se o usuário existe
+                if (!$user) {
+                    throw new \Exception("User with ID {$model['user_id']} not found");
+                }
+
+                // Exclui o usuário e o modelo
+                $user->delete();
+                $model->delete();
+            });
+
+            return response()->json(['status' => true, 'message' => 'Model deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => 'Error deleting model', 'error' => $e->getMessage()], 500);
+        }
     }
 }

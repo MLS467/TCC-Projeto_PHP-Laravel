@@ -4,14 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
 class Attendant extends Model
 {
     /** @use HasFactory<\Database\Factories\AttendantFactory> */
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
-    public function patient()
+    protected $fillable = [
+        'user_id',
+        'id_aministrator_fk',
+        'active'
+    ];
+
+    public function user()
     {
-        return $this->hasMany(PatientModel::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function adm()
+    {
+        return $this->belongsTo(Adm::class);
     }
 }

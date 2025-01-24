@@ -21,9 +21,7 @@ class AdmFactory extends Factory
 
         return [
             'user_id' => $id_user,
-            'status' => $this->faker->randomElement(['active', 'inactive']),
-            'work_start_date' => $this->faker->date(),
-            'work_end_date' => $this->faker->date(),
+            'active' => $this->faker->boolean(),
         ];
     }
 }

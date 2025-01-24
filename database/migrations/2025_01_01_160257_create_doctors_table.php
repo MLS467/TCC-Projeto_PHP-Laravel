@@ -13,8 +13,13 @@ return new class extends Migration
     {
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_administrator_fk');
+            $table->foreign('id_administrator_fk')->references('id')->on('adms')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('crm', 10);
+            $table->string('specialty', 50)->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }

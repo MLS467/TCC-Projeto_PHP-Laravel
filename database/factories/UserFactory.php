@@ -39,7 +39,7 @@ class UserFactory extends Factory
             'street' => $this->faker->streetName(),
             'block' => $this->faker->buildingNumber(),
             'apartment' => $this->faker->word(),
-            'role' => $this->faker->randomElement(['admin', 'user', 'manager']),
+            'role' => $this->faker->randomElement(['admin', 'patient', 'attendant', 'doctor', 'nurse']),
             'age' => $this->faker->numberBetween(18, 99),
         ];
     }

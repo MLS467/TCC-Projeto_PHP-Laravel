@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+
+use App\Models\Attendant as ModelsAttendant;
 use Illuminate\Http\Request;
 
 class Attendant extends Crud
@@ -28,7 +29,7 @@ class Attendant extends Crud
     /**
      * Display the specified resource.
      */
-    public function show(Attendant $attendant)
+    public function show(ModelsAttendant $attendant)
     {
         return $this->showGlobal($attendant, 'user');
     }
@@ -36,7 +37,7 @@ class Attendant extends Crud
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Attendant $attendant)
+    public function update(Request $request, ModelsAttendant $attendant)
     {
         return $this->updateGlobal($request, $attendant);
     }
@@ -46,8 +47,9 @@ class Attendant extends Crud
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Attendant $attendant)
+    public function destroy(ModelsAttendant $attendant)
     {
+
         return $this->destroyGlobal($attendant);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Nurse as ModelsNurse;
 use Illuminate\Http\Request;
 
 class Nurse extends Crud
@@ -27,7 +28,7 @@ class Nurse extends Crud
     /**
      * Display the specified resource.
      */
-    public function show(Nurse $nurse)
+    public function show(ModelsNurse $nurse)
     {
         return $this->showGlobal($nurse, 'user');
     }
@@ -35,7 +36,7 @@ class Nurse extends Crud
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Nurse $nurse)
+    public function update(Request $request, ModelsNurse $nurse)
     {
         return $this->updateGlobal($request, $nurse);
     }
@@ -45,7 +46,7 @@ class Nurse extends Crud
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Nurse $nurse)
+    public function destroy(ModelsNurse $nurse)
     {
         return $this->destroyGlobal($nurse);
     }
