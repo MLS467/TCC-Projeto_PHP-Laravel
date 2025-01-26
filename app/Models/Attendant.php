@@ -13,7 +13,7 @@ class Attendant extends Model
 
     protected $fillable = [
         'user_id',
-        'id_aministrator_fk',
+        'id_administrator_fk',
         'active'
     ];
 

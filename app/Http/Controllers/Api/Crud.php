@@ -31,26 +31,34 @@ class Crud extends Controller
     public function storeGlobal($request, $model)
     {
         try {
-            $modelClass = "App\\Models\\$model";
+            DB::transaction(function () use ($request, $model) {
+                $modelClass = "App\\Models\\$model";
 
-            if (!class_exists($modelClass)) {
-                return ['status' => 'error', 'message' => 'Class not found'];
-            }
-
-            $dataValidated = $request->validated();
-            if ($user = User::create($dataValidated)) {
-                $dataValidated['user_id'] = $user->id;
-
-                if ($modelClass::create($dataValidated)) {
-                    return ['status' => 'success', 'message' => 'Employee created successfully'];
-                } else {
-                    throw new \Exception('Error creating Employee');
+                if (!class_exists($modelClass)) {
+                    throw new \Exception('Model not found');
                 }
-            } else {
-                throw new \Exception('Error creating User');
-            };
+
+                $dataValidated = $request->validated();
+
+
+                $user = User::create($dataValidated);
+
+                if ($user) {
+                    $dataValidated['user_id'] = $user->id;
+
+                    $modelInstance  = $modelClass::create($dataValidated);
+
+                    if (!$modelInstance) {
+                        throw new \Exception('Error creating Model');
+                    }
+                } else {
+                    throw new \Exception('Error creating User');
+                };
+            });
+
+            return response()->json(['status' => 'success', 'message' => 'Employee created successfully'], 201);
         } catch (\Exception $e) {
-            return ['status' => 'error', 'message' => $e->getMessage()];
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -95,19 +103,16 @@ class Crud extends Controller
     {
         try {
             DB::transaction(function () use ($model) {
-                // Verifica se o modelo e o user_id são válidos
                 if (!$model || !$model['user_id']) {
                     throw new \Exception("Invalid model or user ID");
                 }
 
                 $user = User::find($model['user_id']);
 
-                // Verifica se o usuário existe
                 if (!$user) {
                     throw new \Exception("User with ID {$model['user_id']} not found");
                 }
 
-                // Exclui o usuário e o modelo
                 $user->delete();
                 $model->delete();
             });

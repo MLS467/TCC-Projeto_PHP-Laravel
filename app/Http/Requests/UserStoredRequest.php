@@ -93,7 +93,7 @@ class UserStoredRequest extends FormRequest
         $this->merge([
             'flag' => 0,
             'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
-            'password' => bcrypt(0),
+            'password' => $this->has('password') ? bcrypt($this->password) : bcrypt(0),
         ]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-
+use App\Http\Requests\AttendantStoreRequest;
 use App\Models\Attendant as ModelsAttendant;
 use Illuminate\Http\Request;
 
@@ -21,7 +21,7 @@ class Attendant extends Crud
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AttendantStoreRequest $request)
     {
         return $this->storeGlobal($request, $this->model);
     }

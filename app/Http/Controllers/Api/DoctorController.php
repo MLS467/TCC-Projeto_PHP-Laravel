@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Doctor;
 use App\Http\Requests\StoreDoctorRequest;
-use App\Http\Requests\UpdateDoctorRequest;
 use Illuminate\Http\Request;
 
 class DoctorController extends Crud
@@ -23,7 +21,7 @@ class DoctorController extends Crud
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreDoctorRequest $request)
     {
         return $this->storeGlobal($request, $this->model);
     }

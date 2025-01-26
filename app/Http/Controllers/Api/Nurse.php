@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\StoreNurseRequest;
 use App\Models\Nurse as ModelsNurse;
 use Illuminate\Http\Request;
 
 class Nurse extends Crud
 {
-    protected $model = 'Nurse';
+    protected $model = 'nurse';
 
     /**
      * Display a listing of the resource.
@@ -20,7 +21,7 @@ class Nurse extends Crud
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreNurseRequest $request)
     {
         return $this->storeGlobal($request, $this->model);
     }
@@ -30,6 +31,7 @@ class Nurse extends Crud
      */
     public function show(ModelsNurse $nurse)
     {
+
         return $this->showGlobal($nurse, 'user');
     }
 
