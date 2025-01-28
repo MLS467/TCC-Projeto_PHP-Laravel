@@ -23,6 +23,7 @@ class DoctorController extends Crud
      */
     public function store(StoreDoctorRequest $request)
     {
+
         return $this->storeGlobal($request, $this->model);
     }
 

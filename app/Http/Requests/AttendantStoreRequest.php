@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Adm;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AttendantStoreRequest extends FormRequest
@@ -91,7 +92,7 @@ class AttendantStoreRequest extends FormRequest
     {
         $this->merge([
             'active' => $this->has('active')  ? 1 : 0,
-            'id_administrator_fk' => (int) $this->id_administrator_fk,
+            'id_administrator_fk' => (int) Adm::where('user_id', $this->id_administrator_fk)->value('id')
         ]);
     }
 }

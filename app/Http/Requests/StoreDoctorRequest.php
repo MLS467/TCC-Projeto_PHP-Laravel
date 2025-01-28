@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Adm;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreDoctorRequest extends FormRequest
@@ -94,6 +95,9 @@ class StoreDoctorRequest extends FormRequest
             'role' => 'doctor',
             'active' => $this->has('active')  ? 1 : 0,
             'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
+
+            // id_administrator_fk recebe o id do usuário que está autenticado e manda o id do administrador
+            'id_administrator_fk' => (int) Adm::where('user_id', $this->id_administrator_fk)->value('id')
         ]);
     }
 }

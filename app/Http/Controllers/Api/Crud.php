@@ -45,7 +45,6 @@ class Crud extends Controller
 
                 if ($user) {
                     $dataValidated['user_id'] = $user->id;
-
                     $modelInstance  = $modelClass::create($dataValidated);
 
                     if (!$modelInstance) {

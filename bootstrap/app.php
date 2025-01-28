@@ -25,7 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'message' => 'erro ao autenticar',
                 ],
 
-                500
+                401
             );
         });
     })->create();
