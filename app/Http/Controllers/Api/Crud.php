@@ -15,14 +15,23 @@ class Crud extends Controller
      */
     public function indexGlobal($model, $relacionamento = null)
     {
-        $modelClass = "App\\Models\\$model";
+        try {
+            $modelClass = "App\\Models\\$model";
 
-        if (class_exists($modelClass)) {
-            $modelClass = $relacionamento !== null ?  $modelClass::with($relacionamento)->get() : $modelClass::all();
-            return response()->json(['status' => true, 'data' => $modelClass], 200);
+            if (class_exists($modelClass)) {
+                $modelClass = $relacionamento !== null ?  $modelClass::with($relacionamento)->get() : $modelClass::all();
+
+                if (!$modelClass)
+                    throw new \Exception('Model not found');
+
+                return response()->json(['status' => true, 'data' => $modelClass], 200);
+            } else
+                throw new \Exception('Model not found');
+        } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+            return response()->json(['error' => 'Model not found', 'status' => false, "message" => $e->getMessage()], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred', 'status' => false, "message" => $e->getMessage()], 500);
         }
-
-        return response()->json(['error' => 'Model not found', 'status' => false], 404);
     }
 
     /**

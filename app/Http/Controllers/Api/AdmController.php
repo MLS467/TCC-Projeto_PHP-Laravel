@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\AdmStoreRequest;
+use App\Http\Requests\AdmUpdateRequest;
 use App\Models\Adm;
-use App\Models\User;
-use Illuminate\Http\Request;
 
 class AdmController extends Crud
 {
@@ -22,7 +22,7 @@ class AdmController extends Crud
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AdmStoreRequest $request)
     {
         return $this->storeGlobal($request, $this->model);
     }
@@ -38,7 +38,7 @@ class AdmController extends Crud
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Adm $adm)
+    public function update(AdmUpdateRequest $request, Adm $adm)
     {
         return $this->updateGlobal($request, $adm);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\UpdateDoctorRequest;
 use App\Models\Doctor;
 use App\Http\Requests\StoreDoctorRequest;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class DoctorController extends Crud
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Doctor $doctor)
+    public function update(UpdateDoctorRequest $request, Doctor $doctor)
     {
         return $this->updateGlobal($request, $doctor);
     }

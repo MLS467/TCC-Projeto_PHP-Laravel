@@ -22,23 +22,23 @@ class StoreNurseRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
             'active' => 'int',
             'age' => 'required|integer|min:18|max:100',
             'apartment' => 'nullable|string|max:10',
-            'birth' => 'required|date|before:today',
+            'birth' => 'required|date',
             'block' => 'nullable|string|max:10',
             'city' => 'required|string|max:255',
             'coren' => 'required|digits_between:5,15',
-            'cpf' => 'required|digits:11|unique:users,cpf',
+            'cpf' => 'required|digits:11',
             'email' => 'required|email',
-            'id_administrator_fk' => 'required|int|exists:adms,id',
+            'id_administrator_fk' => 'required|int',
             'name' => 'required|string|max:255',
             'neighborhood' => 'nullable|string|max:255',
             'password' => 'required|string|min:6|max:255',
             'phone' => 'required|string|regex:/^\d{10,15}$/',
             'place_of_birth' => 'required|string|max:255',
-            'role' => 'required',
             'sex' => 'required|in:masculino,feminino',
             'specialty' => 'nullable|string|max:255',
             'street' => 'nullable|string|max:255',
@@ -76,7 +76,9 @@ class StoreNurseRequest extends FormRequest
     function prepareForValidation()
     {
         $this->merge([
+            'role' => 'nurse',
             'active' => $this->has('active')  ? 1 : 0,
+            'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
             'id_administrator_fk' => (int) Adm::where('user_id', $this->id_administrator_fk)->value('id')
         ]);
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\StoreNurseRequest;
+use App\Http\Requests\UpdateNurseRequest;
 use App\Models\Nurse as ModelsNurse;
 use Illuminate\Http\Request;
 
@@ -23,6 +24,7 @@ class Nurse extends Crud
      */
     public function store(StoreNurseRequest $request)
     {
+
         return $this->storeGlobal($request, $this->model);
     }
 
@@ -38,7 +40,7 @@ class Nurse extends Crud
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ModelsNurse $nurse)
+    public function update(UpdateNurseRequest $request, ModelsNurse $nurse)
     {
         return $this->updateGlobal($request, $nurse);
     }

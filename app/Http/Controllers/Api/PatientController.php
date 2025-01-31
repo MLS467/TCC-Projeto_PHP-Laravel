@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
+use App\Http\Resources\PatientResource;
+use App\Http\Resources\PatientResourceCollection;
 use App\Models\PatientModel as Patient;
 use App\Models\User;
 
@@ -17,7 +19,7 @@ class PatientController extends Crud
      */
     public function index()
     {
-        return $this->indexGlobal($this->model, 'user');
+        return new PatientResourceCollection(Patient::with('user')->get());
     }
 
     public function patientCompleted()
@@ -56,7 +58,7 @@ class PatientController extends Crud
     public function show(Patient $patient)
     {
 
-        return $this->showGlobal($patient, 'user');
+        return new PatientResource($patient->load('user'));
     }
 
     /**

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ConsultationResource;
+use App\Http\Resources\ConsultationResourceColletion;
 use App\Models\Consultation;
-use App\Http\Requests\StoreConsultationRequest;
 use App\Http\Requests\UpdateConsultationRequest;
 use Illuminate\Http\Request;
+
+// tenho que fazer as relações com paciente
 
 class ConsultationController extends Controller
 {
@@ -15,7 +18,7 @@ class ConsultationController extends Controller
      */
     public function index()
     {
-        return Consultation::all();
+        return new ConsultationResourceColletion(Consultation::all());
     }
 
     /**
@@ -31,15 +34,16 @@ class ConsultationController extends Controller
      */
     public function show(Consultation $consultation)
     {
-        //
+        return new ConsultationResource($consultation);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateConsultationRequest $request, Consultation $consultation)
+    public function update(request $request, Consultation $consultation)
     {
-        //
+        $consultation->update($request->all());
+        return response()->json(["status" => true, "message" => "Consultation updated successfully"]);
     }
 
     /**
@@ -47,6 +51,6 @@ class ConsultationController extends Controller
      */
     public function destroy(Consultation $consultation)
     {
-        //
+        $consultation->delete();
     }
 }

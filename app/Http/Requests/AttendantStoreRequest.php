@@ -24,7 +24,6 @@ class AttendantStoreRequest extends FormRequest
     {
         return [
             'active' => 'int',
-            'age' => 'required|integer|min:18|max:100',
             'apartment' => 'nullable|string|max:10',
             'birth' => 'required|date|before:today',
             'block' => 'nullable|string|max:10',
@@ -46,10 +45,6 @@ class AttendantStoreRequest extends FormRequest
     {
         return [
             'active.int' => 'O campo ativo deve ser um número inteiro.',
-            'age.required' => 'O campo idade é obrigatório.',
-            'age.integer' => 'O campo idade deve ser um número inteiro.',
-            'age.min' => 'O campo idade deve ser no mínimo 18.',
-            'age.max' => 'O campo idade deve ser no máximo 100.',
             'apartment.string' => 'O campo apartamento deve ser uma string.',
             'apartment.max' => 'O campo apartamento deve ter no máximo 10 caracteres.',
             'birth.required' => 'O campo nascimento é obrigatório.',
@@ -91,6 +86,7 @@ class AttendantStoreRequest extends FormRequest
     function prepareForValidation()
     {
         $this->merge([
+            'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
             'active' => $this->has('active')  ? 1 : 0,
             'id_administrator_fk' => (int) Adm::where('user_id', $this->id_administrator_fk)->value('id')
         ]);

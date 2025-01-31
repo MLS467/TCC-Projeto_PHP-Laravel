@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\AttendantStoreRequest;
+use App\Http\Requests\UpdateDoctorRequest;
 use App\Models\Attendant as ModelsAttendant;
 use Illuminate\Http\Request;
 
@@ -37,7 +38,7 @@ class Attendant extends Crud
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ModelsAttendant $attendant)
+    public function update(UpdateDoctorRequest $request, ModelsAttendant $attendant)
     {
         return $this->updateGlobal($request, $attendant);
     }
