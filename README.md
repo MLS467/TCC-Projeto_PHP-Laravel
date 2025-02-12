@@ -131,3 +131,8 @@ Confira o diagrama de classes que descreve as relações entre os modelos e as f
 
 Agora você está pronto para rodar e testar a API com autenticação via token, CRUDs completos e dados populados para os usuários e suas profissões! 🚀
 
+## 7. **Teste com PHPUnit**
+
+- **Login:** [Vídeo do teste](https://drive.google.com/file/d/1j692dOzSdeRAnHPhZzMqJpdanDb-tINX/view?usp=sharing)  
+- **CRUD:** [Vídeo do teste](https://drive.google.com/file/d/1DzMu-j6HZaKZ2BB7jyPeI57zJl_OIsXo/view?usp=sharing)
+
