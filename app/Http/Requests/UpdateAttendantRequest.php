@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Adm;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AttendantUploadRequest extends FormRequest
+class UpdateAttendantRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,21 +23,21 @@ class AttendantUploadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_administrator_fk' => 'nullable|required|int',
-            'active' => 'nullable|int',
+            'id_administrator_fk' => 'nullable|int',
+            'active' => 'nullable|integer',
             'apartment' => 'nullable|string|max:10',
-            'birth' => 'nullable|required|date|before:today',
+            'birth' => 'nullable|date|before:today',
             'block' => 'nullable|string|max:10',
-            'city' => 'nullable|required|string|max:255',
-            'cpf' => 'nullable|required|digits:11|unique:users,cpf',
-            'email' => 'nullable|required|email',
-            'name' => 'nullable|required|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'cpf' => 'nullable|digits:11',
+            'email' => 'nullable|email',
+            'name' => 'nullable|string|max:255',
             'neighborhood' => 'nullable|string|max:255',
-            'password' => 'nullable|required|string|min:6|max:255',
-            'phone' => 'nullable|required|string|regex:/^\d{10,15}$/',
-            'place_of_birth' => 'nullable|required|string|max:255',
-            'role' => 'nullable|required',
-            'sex' => 'nullable|required|in:masculino,feminino',
+            'password' => 'nullable|string|min:6|max:255',
+            'phone' => 'nullable|string|regex:/^\d{10,15}$/',
+            'place_of_birth' => 'nullable|string|max:255',
+            'role' => 'nullable',
+            'sex' => 'nullable|in:masculino,feminino',
             'street' => 'nullable|string|max:255',
         ];
     }
@@ -45,7 +45,7 @@ class AttendantUploadRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'active.int' => 'O campo active deve ser um número inteiro.',
+            'active.integer' => 'O campo active deve ser um número inteiro.',
             'apartment.string' => 'O campo apartment deve ser uma string.',
             'apartment.max' => 'O campo apartment deve ter no máximo 10 caracteres.',
             'birth.required' => 'O campo birth é obrigatório.',
@@ -87,7 +87,7 @@ class AttendantUploadRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'active' => $this->has('active')  ? 1 : 0,
+            'active' => $this->active === "1" ? 1 : 0,
             'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
 
             // id_administrator_fk recebe o id do usuário que está autenticado e manda o id do administrador

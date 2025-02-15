@@ -23,6 +23,7 @@ class StoreDoctorRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'active' => 'required|integer',
             'role' => 'required|string|in:doctor,nurse,attendant',
             'id_administrator_fk' => 'integer',
             'name' => 'required|string|min:3|max:100',
@@ -93,7 +94,7 @@ class StoreDoctorRequest extends FormRequest
     {
         $this->merge([
             'role' => 'doctor',
-            'active' => $this->has('active')  ? 1 : 0,
+            'active' => $this->has('active') ? 1 : 0,
             'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
 
             // id_administrator_fk recebe o id do usuário que está autenticado e manda o id do administrador

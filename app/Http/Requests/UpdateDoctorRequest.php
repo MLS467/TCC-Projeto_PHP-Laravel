@@ -22,7 +22,7 @@ class UpdateDoctorRequest extends FormRequest
     public function rules(): array
     {
         return [
-
+            'active' => 'nullable|integer',
             'role' => 'nullable|string|in:doctor,nurse,attendant',
             'name' => 'nullable|string|min:3|max:100',
             'age' => 'nullable|integer|min:18|max:100',
@@ -46,6 +46,7 @@ class UpdateDoctorRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'active.boolean' => 'O campo "ativo" deve ser um inteiro.',
             'role.in' => 'O campo "role" deve ser um dos seguintes valores: doctor, nurse ou attendant.',
             'name.min' => 'O campo "nome" deve ter pelo menos 3 caracteres.',
             'name.max' => 'O campo "nome" deve ter no máximo 100 caracteres.',
@@ -73,7 +74,7 @@ class UpdateDoctorRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'active' => $this->has('active')  ? 1 : 0,
+            'active' => $this->active === "1" ? 1 : 0,
             'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
         ]);
     }

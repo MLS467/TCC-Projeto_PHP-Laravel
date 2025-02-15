@@ -24,17 +24,17 @@ class UpdateNurseRequest extends FormRequest
     {
         return [
             'id_administrator_fk' => 'nullable|integer',
-            'active' => 'required|boolean',
+            'active' => 'nullable|required|integer',
             'coren' => 'nullable|string|max:20',
             'speciality' => 'nullable|string|max:255',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email|max:255',
+            'name' => 'nullable|required|string|max:255',
+            'email' => 'nullable|required|email|max:255',
             'email_verified_at' => 'nullable|date',
-            'password' => 'required|string|min:8',
+            'password' => 'nullable|required|string|min:8',
             'phone' => 'nullable|string|regex:/^\+?[0-9\s\-\(\)]+$/|max:20',
-            'cpf' => 'required|string|size:11|unique:users,cpf',
-            'sex' => 'required',
-            'birth' => 'required|date',
+            'cpf' => 'nullable|required|string|size:11|',
+            'sex' => 'nullable|required',
+            'birth' => 'nullable|required|date',
             'photo' => 'nullable|url',
             'place_of_birth' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
@@ -42,8 +42,8 @@ class UpdateNurseRequest extends FormRequest
             'street' => 'nullable|string|max:255',
             'block' => 'nullable|string|max:255',
             'apartment' => 'nullable|string|max:10',
-            'role' => 'required|string|max:255',
-            'age' => 'required|integer|min:0',
+            'role' => 'nullable|required|string|max:255',
+            'age' => 'nullable|required|integer|min:0',
             'flag' => 'nullable|boolean'
         ];
     }
@@ -53,7 +53,7 @@ class UpdateNurseRequest extends FormRequest
         return [
             'id_administrator_fk.integer' => 'O ID do administrador deve ser um número inteiro.',
             'active.required' => 'O campo ativo é obrigatório.',
-            'active.boolean' => 'O campo ativo deve ser verdadeiro ou falso.',
+            'active.interger' => 'O campo ativo deve ser verdadeiro ou falso.',
             'coren.string' => 'O COREN deve ser um texto válido.',
             'coren.max' => 'O COREN não pode ter mais de 20 caracteres.',
             'speciality.string' => 'A especialidade deve ser um texto válido.',
@@ -105,9 +105,9 @@ class UpdateNurseRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'role' => 'doctor',
-            'active' => $this->has('active')  ? 1 : 0,
-            'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
+            'role' => 'nurse',
+            'active' => $this->active === "1" ? 1 : 0,
+            'age' => $this->birth ? (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)) : null,
 
             // id_administrator_fk recebe o id do usuário que está autenticado e manda o id do administrador
             'id_administrator_fk' => (int) Adm::where('user_id', $this->id_administrator_fk)->value('id')
