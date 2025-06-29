@@ -62,11 +62,11 @@ class UpdatePatientRequest extends FormRequest
     {
         $this->merge([
             'flag_triage' => 1,
-            'bleeding' => $this->has('bleeding')  ? 1 : 0,
-            'difficulty_breathing' => $this->has('difficulty_breathing') ? 1 : 0,
-            'edema' => $this->has('edema')  ? 1 : 0,
-            'nausea' => $this->has('nausea') ? 1 : 0,
-            'vomiting' => $this->has('vomiting') ? 1 : 0
+            'bleeding' => $this->bleeding  ? 1 : 0,
+            'difficulty_breathing' => $this->difficulty_breathing ? 1 : 0,
+            'edema' => $this->edema  ? 1 : 0,
+            'nausea' => $this->nausea ? 1 : 0,
+            'vomiting' => $this->vomiting ? 1 : 0
         ]);
     }
 

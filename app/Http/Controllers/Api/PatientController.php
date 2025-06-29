@@ -24,7 +24,17 @@ class PatientController extends Crud
 
     public function patientCompleted()
     {
-        return Patient::where('flag_triage', 1)->get()->load('user');
+        return Patient::where('flag_triage', 1)
+            ->orderByRaw("CASE 
+            WHEN patient_condition = 'critical' THEN 1
+            WHEN patient_condition = 'serious' THEN 2
+            WHEN patient_condition = 'moderate' THEN 3
+            WHEN patient_condition = 'mild' THEN 4
+            ELSE 5
+        END")
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->load('user');
     }
 
     /**

@@ -38,6 +38,7 @@ class StorePatientRequest extends FormRequest
             'surgical_history' => 'nullable|string|max:500',
             'edema' => 'nullable|boolean',
             'nausea' => 'nullable|boolean',
+            'patient_condition'=>'string',
             'bleeding' => 'nullable|boolean',
             'allergy' => 'nullable|string|max:500',
             'emergency_phone' => 'nullable|string|regex:/^\d{8,15}$/',

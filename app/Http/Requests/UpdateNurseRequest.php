@@ -24,17 +24,17 @@ class UpdateNurseRequest extends FormRequest
     {
         return [
             'id_administrator_fk' => 'nullable|integer',
-            'active' => 'nullable|required|integer',
+            'active' => 'nullable|integer',
             'coren' => 'nullable|string|max:20',
             'speciality' => 'nullable|string|max:255',
-            'name' => 'nullable|required|string|max:255',
-            'email' => 'nullable|required|email|max:255',
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
             'email_verified_at' => 'nullable|date',
-            'password' => 'nullable|required|string|min:8',
+            'password' => 'nullable|string|min:8',
             'phone' => 'nullable|string|regex:/^\+?[0-9\s\-\(\)]+$/|max:20',
-            'cpf' => 'nullable|required|string|size:11|',
-            'sex' => 'nullable|required',
-            'birth' => 'nullable|required|date',
+            'cpf' => 'nullable|string|size:11|',
+            'sex' => 'nullable',
+            'birth' => 'nullable|date',
             'photo' => 'nullable|url',
             'place_of_birth' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
@@ -42,8 +42,8 @@ class UpdateNurseRequest extends FormRequest
             'street' => 'nullable|string|max:255',
             'block' => 'nullable|string|max:255',
             'apartment' => 'nullable|string|max:10',
-            'role' => 'nullable|required|string|max:255',
-            'age' => 'nullable|required|integer|min:0',
+            'role' => 'nullable|string|max:255',
+            'age' => 'nullable|integer|min:0',
             'flag' => 'nullable|boolean'
         ];
     }

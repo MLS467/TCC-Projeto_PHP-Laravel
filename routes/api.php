@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
+Route::get('/user/patient', [UserController::class, 'UserPatient']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user/patient', [UserController::class, 'UserPatient']);
     Route::get('/user/flag', [UserController::class, 'userFlag']);
     Route::get('/patientCompleted', [PatientController::class, 'patientCompleted']);
 

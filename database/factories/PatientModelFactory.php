@@ -27,7 +27,7 @@ class PatientModelFactory extends Factory
 
         return [
             'user_id' => $user_id,
-            'allegy' => $this->faker->text(100),
+            'allergy' => $this->faker->text(100),
             'sugery_history' => $this->faker->text(100),
             'blood_type' => $blood_type,
             'blood_pressure' => $this->faker->randomFloat(2, 60, 200),
@@ -38,7 +38,8 @@ class PatientModelFactory extends Factory
             'chief_complaint' => $this->faker->text(100),
             'responsible_name' => $this->faker->name,
             'emergency_phone' => $this->faker->phoneNumber,
-            'triage_flag' => 0,
+            'flag_triage' => 1,
+            'patient_condition' => $this->faker->randomElement(['critical', 'serious', 'mild', 'moderate']),
         ];
     }
 }
