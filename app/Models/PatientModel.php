@@ -31,7 +31,7 @@ class PatientModel extends Model
         'blood_pressure',
         'responsible_name',
         'flag_triage',
-        'patient_condition'
+        'flag_consultation'
     ];
 
     public function user()

@@ -20,6 +20,7 @@ class Consultation extends Model
         'performed_procedures',
         'diagnosis',
         'additional_notes',
-        'patient_id'
+        'patient_id',
+        'flag_consultation'
     ];
 }

@@ -25,13 +25,14 @@ class PatientController extends Crud
     public function patientCompleted()
     {
         return Patient::where('flag_triage', 1)
+            ->where('flag_consultation', 0) // Adiciona filtro para mostrar apenas quando flag_consultition = 0
             ->orderByRaw("CASE 
-            WHEN patient_condition = 'critical' THEN 1
-            WHEN patient_condition = 'serious' THEN 2
-            WHEN patient_condition = 'moderate' THEN 3
-            WHEN patient_condition = 'mild' THEN 4
-            ELSE 5
-        END")
+        WHEN patient_condition = 'critical' THEN 1
+        WHEN patient_condition = 'serious' THEN 2
+        WHEN patient_condition = 'moderate' THEN 3
+        WHEN patient_condition = 'mild' THEN 4
+        ELSE 5
+    END")
             ->orderBy('created_at', 'asc')
             ->get()
             ->load('user');
@@ -43,10 +44,11 @@ class PatientController extends Crud
     public function store(StorePatientRequest $request)
     {
         try {
-            $id_user = $request->user_id;
+            $patientData = $request->validated();
+            $patientData['flag_consultation'] = 0;
 
-            if (Patient::create($request->validated())) {
-                User::find($id_user)->update(['flag' => '1']);
+
+            if (Patient::create($patientData)) {
                 return response()->json([
                     'status' => true,
                     'message' => 'Patient created successfully'

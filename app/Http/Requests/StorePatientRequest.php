@@ -38,10 +38,11 @@ class StorePatientRequest extends FormRequest
             'surgical_history' => 'nullable|string|max:500',
             'edema' => 'nullable|boolean',
             'nausea' => 'nullable|boolean',
-            'patient_condition'=>'string',
+            'patient_condition' => 'string',
             'bleeding' => 'nullable|boolean',
             'allergy' => 'nullable|string|max:500',
             'emergency_phone' => 'nullable|string|regex:/^\d{8,15}$/',
+            'flag_consultation' => 'integer',
         ];
     }
 
@@ -74,6 +75,7 @@ class StorePatientRequest extends FormRequest
             'allergy.string' => 'As alergias devem ser uma string.',
             'allergy.max' => 'As alergias não podem ultrapassar 500 caracteres.',
             'emergency_phone.regex' => 'O telefone de emergência deve ser um número entre 8 e 15 dígitos.',
+            'flag_consultation' => 'O campo flag_consultation é obrigatório.',
         ];
     }
 
@@ -85,9 +87,9 @@ class StorePatientRequest extends FormRequest
             'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
             'bleeding' => $this->has('bleeding')  ? 1 : 0,
             'difficulty_breathing' => $this->has('difficulty_breathing') ? 1 : 0,
-            'edema' => $this->has('edema')  ? 1 : 0,
-            'nausea' => $this->has('nausea') ? 1 : 0,
-            'vomiting' => $this->has('vomiting') ? 1 : 0
+            'edema' => $this->edema  ? 1 : 0,
+            'nausea' => $this->nausea ? 1 : 0,
+            'vomiting' => $this->vomiting ? 1 : 0,
         ]);
     }
 }
