@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 // Autenticação
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
+Route::get('/image-protect/{filename}', [UserController::class, 'getImageProtected'])
+    ->name('image.protected');
 /**
  * Protected Routes (Authentication Required)
  */

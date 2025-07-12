@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\UserStoredRequest;
+use App\Http\traits\UploadImagemTrait;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Crud
 {
+    use UploadImagemTrait;
 
     /**
      * Display a listing of the resource.
@@ -59,20 +62,20 @@ class UserController extends Crud
     public function store(UserStoredRequest $request)
     {
         try {
-            $user = User::create($request->validated());
+            $photo_name = $this->uploadImagem($request);
+            $data_validated = $request->validated();
+            $data_validated['photo'] = $photo_name;
+            $user = User::create($data_validated);
 
-            if ($user) {
-                return response()->json([
-                    'status' => true,
-                    'message' => 'User created successfully',
-                    'data' => $user
-                ], 201);
-            } else {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Error creating user'
-                ], 400);
+            if (!$user) {
+                throw new Exception;
             }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User created successfully',
+                'data' => $user
+            ], 201);
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
@@ -176,5 +179,21 @@ class UserController extends Crud
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+
+    public function getImageProtected(string $filename)
+    {
+        $caminho = "users/{$filename}";
+
+        if (!Storage::disk('local')->exists($caminho)) {
+            abort(404);
+        }
+
+
+        $arquivo = Storage::disk('local')->get($caminho);
+        $tipoMime = Storage::mimeType($caminho);
+
+        return response($arquivo)->header('Content-Type', $tipoMime);
     }
 }
