@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\UserStoredRequest;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Crud
 {
@@ -16,17 +16,41 @@ class UserController extends Crud
      */
     public function index()
     {
-        return $this->indexGlobal('User');
+        try {
+            return $this->indexGlobal('User');
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error fetching users',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function userFlag()
     {
-        return User::where([['flag', '=', '0'], ['role', '=', 'patient']])->get();
+        try {
+            return User::where([['flag', '=', '0'], ['role', '=', 'patient']])->get();
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error fetching flagged users',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function UserPatient()
     {
-        return User::where('role', 'patient')->get();
+        try {
+            return User::where('role', 'patient')->get();
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error fetching patient users',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -34,18 +58,28 @@ class UserController extends Crud
      */
     public function store(UserStoredRequest $request)
     {
+        try {
+            $user = User::create($request->validated());
 
-        if (User::create($request->validated())) {
-            return response()->json([
-                'status' => true,
-                'message' => 'User created successfully'
-            ], 201);
-        } else {
+            if ($user) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'User created successfully',
+                    'data' => $user
+                ], 201);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Error creating user'
+                ], 400);
+            }
+        } catch (Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error creating user'
-            ], 400);
-        };
+                'message' => 'Error creating user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -53,7 +87,42 @@ class UserController extends Crud
      */
     public function show(User $user)
     {
-        return $this->showGlobal($user);
+        try {
+            return $this->showGlobal($user);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'
+            ], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error fetching user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function cpf_verification($cpf)
+    {
+        try {
+            $user = User::where('cpf', $cpf)->get();
+
+            if ($user->isEmpty()) {
+                throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Patient not found');
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Patient found',
+                'data' => $user
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 404);
+        }
     }
 
     /**
@@ -61,7 +130,27 @@ class UserController extends Crud
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $user = User::findOrFail($id);
+            $user->update($request->all());
+
+            return response()->json([
+                'status' => true,
+                'message' => 'User updated successfully',
+                'data' => $user
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'
+            ], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error updating user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -69,6 +158,23 @@ class UserController extends Crud
      */
     public function destroy(User $user)
     {
-        return $this->destroyGlobal($user);
+        try {
+            $this->destroyGlobal($user);
+            return response()->json([
+                'status' => true,
+                'message' => 'User deleted successfully'
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'
+            ], 404);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error deleting user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

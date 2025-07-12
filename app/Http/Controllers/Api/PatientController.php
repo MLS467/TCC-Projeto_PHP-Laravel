@@ -8,6 +8,7 @@ use App\Http\Resources\PatientResource;
 use App\Http\Resources\PatientResourceCollection;
 use App\Models\PatientModel as Patient;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class PatientController extends Crud
 {
@@ -37,25 +38,35 @@ class PatientController extends Crud
             ->get()
             ->load('user');
     }
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(StorePatientRequest $request)
     {
         try {
-            $patientData = $request->validated();
-            $patientData['flag_consultation'] = 0;
+            return DB::transaction(function () use ($request) {
+                $patientData = $request->validated();
+                $patientData['flag_consultation'] = 0;
 
+                $patient = Patient::create($patientData);
 
-            if (Patient::create($patientData)) {
+                if (!$patient) {
+                    throw new \Exception('Error creating patient');
+                }
+
+                $user = User::find($patientData['user_id']);
+                if (!$user) {
+                    throw new \Exception('User not found');
+                }
+
+                $user->update(['flag' => 1]);
+
                 return response()->json([
                     'status' => true,
-                    'message' => 'Patient created successfully'
+                    'message' => 'Patient created and user updated successfully',
+                    'data' => $patient
                 ], 201);
-            } else {
-                throw new \Exception('Error creating patient');
-            }
+            });
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
@@ -69,7 +80,6 @@ class PatientController extends Crud
      */
     public function show(Patient $patient)
     {
-
         return new PatientResource($patient->load('user'));
     }
 

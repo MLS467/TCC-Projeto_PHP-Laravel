@@ -111,14 +111,18 @@ class Crud extends Controller
     {
         try {
             DB::transaction(function () use ($model) {
-                if (!$model || !$model['user_id']) {
+                if (!$model || !$model['id']) {
                     throw new \Exception("Invalid model or user ID");
                 }
 
-                $user = User::find($model['user_id']);
+                if ($model['flag'] === 0) {
+                    $user = User::find($model['id']);
+                } else {
+                    $user = User::find($model['user']['id']);
+                }
 
                 if (!$user) {
-                    throw new \Exception("User with ID {$model['user_id']} not found");
+                    throw new \Exception("User with ID {$model['id']} not found");
                 }
 
                 $user->delete();
