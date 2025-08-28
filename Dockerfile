@@ -15,7 +15,10 @@ FROM php:8.2-apache
 # Instala extensões PHP necessárias (com pdo_pgsql)
 RUN apt-get update && apt-get install -y \
     libzip-dev unzip git curl libpng-dev libonig-dev libxml2-dev zip \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    libpq-dev  # Instala as bibliotecas de desenvolvimento do PostgreSQL
+
+# Instala a extensão pdo_pgsql
+RUN docker-php-ext-install pdo pdo_pgsql zip
 
 # Ativa o mod_rewrite no Apache (necessário para Laravel)
 RUN a2enmod rewrite
