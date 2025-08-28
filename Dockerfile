@@ -23,6 +23,9 @@ RUN apt-get update && apt-get install -y \
 # Ativa o mod_rewrite no Apache (necessário para Laravel)
 RUN a2enmod rewrite
 
+# Ajusta DocumentRoot para apontar para o diretório public do Laravel
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
+
 # Define diretório de trabalho
 WORKDIR /var/www/html
 
@@ -31,8 +34,9 @@ COPY --from=build /app /var/www/html
 
 # Ajusta permissões (importante para storage e cache)
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
 # Expõe porta padrão do Apache
 EXPOSE 80
