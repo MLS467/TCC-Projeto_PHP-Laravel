@@ -6,19 +6,16 @@ WORKDIR /app
 # Copia todo o projeto primeiro
 COPY . .
 
-# Garante que o .env exista durante a instalação (alguns pacotes precisam)
-RUN cp .env.example .env
-
 # Instala dependências do Composer
 RUN composer install --no-dev --optimize-autoloader
 
 # Etapa 2: Container final com Apache e PHP
 FROM php:8.2-apache
 
-# Instala extensões PHP necessárias
+# Instala extensões PHP necessárias (com pdo_pgsql)
 RUN apt-get update && apt-get install -y \
     libzip-dev unzip git curl libpng-dev libonig-dev libxml2-dev zip \
-    && docker-php-ext-install pdo pdo_mysql zip
+    && docker-php-ext-install pdo pdo_pgsql zip
 
 # Ativa o mod_rewrite no Apache (necessário para Laravel)
 RUN a2enmod rewrite
