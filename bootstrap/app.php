@@ -26,12 +26,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'api/*',
         ]);
 
-        // Configuração CORS
-        $middleware->web(append: [
-            \Illuminate\Http\Middleware\HandleCors::class,
-        ]);
-
-        $middleware->api(append: [
+        // Configuração CORS - aplicar primeiro para todas as requisições
+        $middleware->use([
             \Illuminate\Http\Middleware\HandleCors::class,
         ]);
     })
