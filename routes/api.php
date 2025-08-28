@@ -10,12 +10,22 @@ use App\Http\Controllers\Api\Nurse;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 /**
  * Public Routes (No Authentication Required)
  */
 // Autenticação
 Route::post('/login', [LoginController::class, 'login'])->name('login');
+
+
+//excluir
+Route::get('/run-migrations', function () {
+    Artisan::call('migrate');
+    return 'Migrations executadas com sucesso!';
+});
+
+//
 
 Route::get('/image-protect/{filename}', [UserController::class, 'getImageProtected'])
     ->name('image.protected');
