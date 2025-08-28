@@ -41,6 +41,7 @@ class Attendant extends Crud
      */
     public function update(UpdateAttendantRequest $request, ModelsAttendant $attendant)
     {
+        return response()->json($request->validated());
         return $this->updateGlobal($request, $attendant);
     }
 
