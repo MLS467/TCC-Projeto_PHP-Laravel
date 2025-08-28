@@ -13,6 +13,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Configuração CORS personalizada - aplicar primeiro para todas as requisições
+        $middleware->use([
+            \App\Http\Middleware\CorsMiddleware::class,
+        ]);
+
         $middleware->api(prepend: [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
@@ -24,11 +29,6 @@ return Application::configure(basePath: dirname(__DIR__))
         // Excluir CSRF de rotas da API
         $middleware->validateCsrfTokens(except: [
             'api/*',
-        ]);
-
-        // Configuração CORS - aplicar primeiro para todas as requisições
-        $middleware->use([
-            \Illuminate\Http\Middleware\HandleCors::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', '*'],
 
     'allowed_methods' => ['*'],
 
@@ -32,7 +32,6 @@ return [
 
     'allowed_origins_patterns' => [
         'https://.*\.netlify\.app',
-        'https://atendebem\.netlify\.app',
     ],
 
     'allowed_headers' => ['*'],
@@ -41,9 +40,12 @@ return [
         'Authorization',
         'Content-Type',
         'X-Requested-With',
+        'Access-Control-Allow-Origin',
+        'Access-Control-Allow-Headers',
+        'Access-Control-Allow-Methods',
     ],
 
-    'max_age' => 0,
+    'max_age' => 86400,
 
     'supports_credentials' => true,
 
