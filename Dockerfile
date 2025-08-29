@@ -26,6 +26,19 @@ RUN apt-get update && apt-get install -y \
     libzip-dev unzip git curl libpng-dev libonig-dev libxml2-dev zip \
     libpq-dev  # Instala as bibliotecas de desenvolvimento do PostgreSQL
 
+# <--- adiciona aqui limita requisições abusivas
+RUN apt-get update && apt-get install -y \
+    libzip-dev unzip git curl libpng-dev libonig-dev libxml2-dev zip \
+    libpq-dev \
+    libapache2-mod-evasive
+
+RUN a2enmod evasive
+
+# cria pasta de logs pro evasive
+RUN mkdir -p /var/log/apache2/evasive && chown -R www-data:www-data /var/log/apache2/evasive
+
+COPY ./evasive.conf /etc/apache2/mods-available/evasive.conf
+
 # Instala a extensão pdo_pgsql
 RUN docker-php-ext-install pdo pdo_pgsql zip
 
