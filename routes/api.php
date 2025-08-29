@@ -10,56 +10,57 @@ use App\Http\Controllers\Api\Nurse;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
+// use Illuminate\Support\Facades\Artisan;
 
-/**
- * Public Routes (No Authentication Required)
- */
-// Autenticação
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::middleware('guest')->group(function () {
+    // Autenticação
+    Route::post('/login', [LoginController::class, 'login'])->name('login');
 
+    // pegar imagens
+    Route::get('/image-protect/{filename}', [UserController::class, 'getImageProtected'])
+        ->name('image.protected');
 
-//excluir
-Route::get('/run-migrations', function () {
-    Artisan::call('migrate');
-    return 'Migrations executadas com sucesso!';
+    // //roda migrations no banco em produção
+    // Route::get('/run-migrations', function () {
+    //     Artisan::call('migrate');
+    //     return 'Migrations executadas com sucesso!';
+    // });
 });
 
-//
-
-Route::get('/image-protect/{filename}', [UserController::class, 'getImageProtected'])
-    ->name('image.protected');
-/**
- * Protected Routes (Authentication Required)
- */
+//Protected Routes (Authentication Required)
 Route::middleware('auth:sanctum')->group(function () {
     // User Routes
     Route::get('/user/patient', [UserController::class, 'UserPatient']);
+
     Route::get('/user/cpf/{cpf}', [UserController::class, 'cpf_verification'])
         ->name('patient.cpf_verification');
+
     Route::get('/user/flag', [UserController::class, 'userFlag']);
-    Route::apiResource('/user', UserController::class);
 
     // Medical Records Routes
-    Route::apiResource('/medical-record', MedicalRecordController::class);
     Route::get('/medical-record/search/{cpf}', [MedicalRecordController::class, 'show_records'])
         ->name('medical-records.show_records');
+
     Route::get('/medical-record/show/{id}', [MedicalRecordController::class, 'show'])
         ->name('medical-records.show');
 
-    // Patient Routes
-    Route::get('/patientCompleted', [PatientController::class, 'patientCompleted']);
-    Route::apiResource('/patient', PatientController::class);
-
-    // Staff Routes
-    Route::apiResource('/attendant', Attendant::class);
-    Route::apiResource('/doctor', DoctorController::class);
-    Route::apiResource('/nurse', Nurse::class);
-    Route::apiResource('/adm', AdmController::class);
-
-    // Consultation Routes
-    Route::apiResource('/consultation', ConsultationController::class);
-
     // Authentication Routes
     Route::get('/logout/{user}', [LoginController::class, 'logout'])->name('logout');
+
+    // Patient Routes
+    Route::get('/patientCompleted', [PatientController::class, 'patientCompleted']);
+
+    Route::apiResources([
+        '/medical-record' => MedicalRecordController::class,
+        '/user' => UserController::class,
+        '/patient' => PatientController::class,
+
+        // Staff Routes
+        '/attendant' => Attendant::class,
+        '/doctor' => DoctorController::class,
+        '/nurse' => Nurse::class,
+        '/adm' => AdmController::class,
+        // Consultation Routes
+        '/consultation' => ConsultationController::class
+    ]);
 });

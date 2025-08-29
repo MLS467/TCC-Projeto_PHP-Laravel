@@ -6,7 +6,6 @@ use App\Http\Requests\AttendantStoreRequest;
 use App\Http\Requests\UpdateAttendantRequest;
 use App\Http\Requests\UpdateDoctorRequest;
 use App\Models\Attendant as ModelsAttendant;
-use Illuminate\Http\Request;
 
 class Attendant extends Crud
 {
@@ -41,7 +40,6 @@ class Attendant extends Crud
      */
     public function update(UpdateAttendantRequest $request, ModelsAttendant $attendant)
     {
-        return response()->json($request->validated());
         return $this->updateGlobal($request, $attendant);
     }
 
@@ -52,7 +50,6 @@ class Attendant extends Crud
      */
     public function destroy(ModelsAttendant $attendant)
     {
-
         return $this->destroyGlobal($attendant);
     }
 }
