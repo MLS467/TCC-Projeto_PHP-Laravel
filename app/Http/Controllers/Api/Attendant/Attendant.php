@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Attendant;
 
+use App\Http\Controllers\Api\Abstract\Crud;
 use App\Http\Requests\AttendantStoreRequest;
 use App\Http\Requests\UpdateAttendantRequest;
-use App\Http\Requests\UpdateDoctorRequest;
 use App\Models\Attendant as ModelsAttendant;
 
 class Attendant extends Crud

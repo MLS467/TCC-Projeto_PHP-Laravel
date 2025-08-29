@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Adm;
 
+use App\Http\Controllers\Api\Abstract\Crud;
 use App\Http\Requests\AdmStoreRequest;
 use App\Http\Requests\AdmUpdateRequest;
 use App\Models\Adm;

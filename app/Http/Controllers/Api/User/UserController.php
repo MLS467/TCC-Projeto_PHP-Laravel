@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\User;
 
+use App\Http\Controllers\Api\Abstract\Crud;
 use App\Http\Requests\UserStoredRequest;
 use App\Http\traits\UploadImagemTrait;
 use App\Models\User;
@@ -25,32 +26,6 @@ class UserController extends Crud
             return response()->json([
                 'status' => false,
                 'message' => 'Error fetching users',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function userFlag()
-    {
-        try {
-            return User::where([['flag', '=', '0'], ['role', '=', 'patient']])->get();
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Error fetching flagged users',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function UserPatient()
-    {
-        try {
-            return User::where('role', 'patient')->get();
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Error fetching patient users',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -106,27 +81,7 @@ class UserController extends Crud
         }
     }
 
-    public function cpf_verification($cpf)
-    {
-        try {
-            $user = User::where('cpf', $cpf)->get();
 
-            if ($user->isEmpty()) {
-                throw new \Illuminate\Database\Eloquent\ModelNotFoundException('Patient not found');
-            }
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Patient found',
-                'data' => $user
-            ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ], 404);
-        }
-    }
 
     /**
      * Update the specified resource in storage.

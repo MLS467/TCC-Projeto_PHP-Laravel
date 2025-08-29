@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Nurse;
 
+use App\Http\Controllers\Api\Abstract\Crud;
 use App\Http\Requests\StoreNurseRequest;
 use App\Http\Requests\UpdateNurseRequest;
 use App\Models\Nurse as ModelsNurse;
-use Illuminate\Http\Request;
 
 class Nurse extends Crud
 {

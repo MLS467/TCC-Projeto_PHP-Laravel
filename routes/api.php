@@ -1,20 +1,27 @@
 <?php
 
-use App\Http\Controllers\Api\AdmController;
-use App\Http\Controllers\Api\Attendant;
-use App\Http\Controllers\Api\ConsultationController;
-use App\Http\Controllers\Api\DoctorController;
-use App\Http\Controllers\Api\LoginController;
-use App\Http\Controllers\Api\MedicalRecordController;
-use App\Http\Controllers\Api\Nurse;
-use App\Http\Controllers\Api\PatientController;
-use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\Adm\AdmController;
+use App\Http\Controllers\Api\Attendant\Attendant;
+use App\Http\Controllers\Api\ConsultationData\ConsultationController;
+use App\Http\Controllers\Api\Doctor\DoctorController;
+use App\Http\Controllers\Api\Auth\LoginController;
+use App\Http\Controllers\Api\Auth\LogoutController;
+use App\Http\Controllers\Api\Record\MedicalRecordController;
+use App\Http\Controllers\Api\Nurse\Nurse;
+use App\Http\Controllers\Api\Patient\PatientCompletedController;
+use App\Http\Controllers\Api\Patient\PatientController;
+use App\Http\Controllers\Api\Record\ShowRecordsByCPFController;
+use App\Http\Controllers\Api\User\SearchForPatientByCPFController;
+use App\Http\Controllers\Api\User\UserController;
+use App\Http\Controllers\Api\User\UserFlagController;
+use App\Http\Controllers\Api\User\UserPatientController;
 use Illuminate\Support\Facades\Route;
 // use Illuminate\Support\Facades\Artisan;
 
 Route::middleware('guest')->group(function () {
     // Autenticação
     Route::post('/login', [LoginController::class, 'login'])->name('login');
+
 
     // pegar imagens
     Route::get('/image-protect/{filename}', [UserController::class, 'getImageProtected'])
@@ -29,27 +36,30 @@ Route::middleware('guest')->group(function () {
 
 //Protected Routes (Authentication Required)
 Route::middleware('auth:sanctum')->group(function () {
+
     // User Routes
-    Route::get('/user/patient', [UserController::class, 'UserPatient']);
+    Route::get('/user/patient', UserPatientController::class);
 
-    Route::get('/user/cpf/{cpf}', [UserController::class, 'cpf_verification'])
-        ->name('patient.cpf_verification');
+    Route::get('/user/cpf/{cpf}', SearchForPatientByCPFController::class);
 
-    Route::get('/user/flag', [UserController::class, 'userFlag']);
+    Route::get('/user/flag', UserFlagController::class);
+
 
     // Medical Records Routes
-    Route::get('/medical-record/search/{cpf}', [MedicalRecordController::class, 'show_records'])
-        ->name('medical-records.show_records');
+    Route::get('/medical-record/search/{cpf}', ShowRecordsByCPFController::class);
 
-    Route::get('/medical-record/show/{id}', [MedicalRecordController::class, 'show'])
-        ->name('medical-records.show');
+    Route::get('/medical-record/show/{id}', [MedicalRecordController::class, 'show']);
+
 
     // Authentication Routes
-    Route::get('/logout/{user}', [LoginController::class, 'logout'])->name('logout');
+    Route::get('/logout/{user}', LogoutController::class);
+
 
     // Patient Routes
-    Route::get('/patientCompleted', [PatientController::class, 'patientCompleted']);
+    Route::get('/patientCompleted', PatientCompletedController::class);
 
+
+    // Rotas padrões para crud
     Route::apiResources([
         '/medical-record' => MedicalRecordController::class,
         '/user' => UserController::class,

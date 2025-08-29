@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Record;
 
 use App\Http\Controllers\Controller;
 use App\Models\MedicalRecord;
@@ -8,14 +8,6 @@ use Illuminate\Http\Request;
 
 class MedicalRecordController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
 
     /**
      * Store a newly created resource in storage.
@@ -65,23 +57,6 @@ class MedicalRecordController extends Controller
     public function update(Request $request, string $id)
     {
         //
-
-
-    }
-
-
-    public function show_records(Request $request, $cpf)
-    {
-        // dd($cpf);
-
-        return response()->json([
-            'data' => MedicalRecord::where('cpf', $cpf)
-                ->get([
-                    'id',
-                    'full_name',
-                    'created_at',
-                ])
-        ]);
     }
 
     /**
