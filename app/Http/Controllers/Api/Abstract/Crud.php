@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Api\Abstract;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class Crud extends Controller
+abstract class Crud extends Controller
 {
     /**
      * Display a listing of the resource.

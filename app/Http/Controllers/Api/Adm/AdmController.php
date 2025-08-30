@@ -44,8 +44,6 @@ class AdmController extends Crud
         return $this->updateGlobal($request, $adm);
     }
 
-
-
     /**
      * Remove the specified resource from storage.
      */

@@ -70,6 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
         '/doctor' => DoctorController::class,
         '/nurse' => Nurse::class,
         '/adm' => AdmController::class,
+
         // Consultation Routes
         '/consultation' => ConsultationController::class
     ]);

@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api\ConsultationData;
 
+use App\Exceptions\ConsultationException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ConsultationResource;
-use App\Http\Resources\ConsultationResourceColletion;
+use App\Http\Resources\ConsultationResourceCollection;
 use App\Models\Consultation;
 use App\Http\Requests\UpdateConsultationRequest;
 use App\Http\Requests\StoreConsultationRequest;
 use App\Models\PatientModel;
-use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 
 class ConsultationController extends Controller
 {
@@ -19,15 +19,12 @@ class ConsultationController extends Controller
      */
     public function index()
     {
-        try {
-            return new ConsultationResourceColletion(Consultation::all());
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Error retrieving consultations',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        $newConsutation = new ConsultationResourceCollection(Consultation::all());
+
+        if (!$newConsutation->isEmpty())
+            return $newConsutation;
+
+        throw new ConsultationException('Erro em solicitar dados de consulta.', 500);
     }
 
     /**
@@ -36,21 +33,35 @@ class ConsultationController extends Controller
     public function store(StoreConsultationRequest $request)
     {
         try {
-            $validatedData = $request->validated();
-            $consultation = Consultation::create($validatedData);
-            PatientModel::where('id', $validatedData['patient_id'])
-                ->update(['flag_consultation' => 1]);
-            return response()->json([
-                'status' => true,
-                'message' => 'Consultation created successfully',
-                'data' => new ConsultationResource($consultation)
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Error creating consultation',
-                'error' => $e->getMessage()
-            ], 500);
+            return DB::transaction(function () use ($request) {
+                $validatedData = $request->validated();
+
+                $consultation = Consultation::create($validatedData);
+
+                $updatePatientFlag = PatientModel::where('id', $validatedData['patient_id'])
+                    ->update(['flag_consultation' => 1]);
+
+                if (!$updatePatientFlag) {
+                    throw new ConsultationException('Erro ao atualizar flag do paciente.', 500);
+                }
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Consultation created successfully',
+                    'data' => new ConsultationResource($consultation)
+                ], 201);
+            });
+        } catch (\Exception $ConsultationError) {
+            if (env("APP_ENV") == 'local') {
+
+                return response()->json([
+                    'status' => false,
+                    'message' => $ConsultationError->getMessage(),
+                    'error' => $ConsultationError->getTraceAsString()
+                ], 500);
+            }
+
+            throw new ConsultationException($ConsultationError->getMessage(), 500);
         }
     }
 
@@ -59,18 +70,16 @@ class ConsultationController extends Controller
      */
     public function show(Consultation $consultation)
     {
-        try {
+        $data = new ConsultationResource($consultation);
+
+        if (!$data->isEmpty()) {
             return response()->json([
                 'status' => true,
-                'data' => new ConsultationResource($consultation)
+                'data' => $data
             ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Error retrieving consultation',
-                'error' => $e->getMessage()
-            ], 500);
         }
+
+        throw new ConsultationException('Erro ao buscar consulta.', 404);
     }
 
     /**
@@ -78,20 +87,18 @@ class ConsultationController extends Controller
      */
     public function update(UpdateConsultationRequest $request, Consultation $consultation)
     {
-        try {
-            $consultation->update($request->validated());
+
+        $validate_data = $request->validated();
+
+        if ($consultation->update($validate_data)) {
             return response()->json([
                 'status' => true,
                 'message' => 'Consultation updated successfully',
                 'data' => new ConsultationResource($consultation)
             ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Error updating consultation',
-                'error' => $e->getMessage()
-            ], 500);
         }
+
+        throw new ConsultationException('Erro ao atualizar consulta.', 500);
     }
 
     /**
@@ -99,18 +106,14 @@ class ConsultationController extends Controller
      */
     public function destroy(Consultation $consultation)
     {
-        try {
-            $consultation->delete();
+
+        if ($consultation->delete()) {
             return response()->json([
                 'status' => true,
                 'message' => 'Consultation deleted successfully'
             ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Error deleting consultation',
-                'error' => $e->getMessage()
-            ], 500);
         }
+
+        throw new ConsultationException('Erro ao deletar consulta.', 500);
     }
 }
