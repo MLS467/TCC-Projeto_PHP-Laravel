@@ -14,8 +14,11 @@ class LoginController extends Controller
         $credentials = $request->validated();
 
         if (Auth::attempt($credentials)) {
+
             $user = Auth::user();
+
             $token = $request->user()->createToken('Token-Valido')->plainTextToken;
+
             return response()->json(['user' => $user, 'token' => $token], 200);
         } else
             throw new AuthException('Senha ou email inválidos');

@@ -11,9 +11,10 @@ use App\Http\Controllers\Api\Nurse\Nurse;
 use App\Http\Controllers\Api\Patient\PatientCompletedController;
 use App\Http\Controllers\Api\Patient\PatientController;
 use App\Http\Controllers\Api\Record\ShowRecordsByCPFController;
-use App\Http\Controllers\Api\User\SearchForPatientByCPFController;
+use App\Http\Controllers\Api\Patient\SearchForPatientByCPFController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\User\UserFlagController;
+use App\Http\Controllers\Api\User\UserGetImageProtectedController;
 use App\Http\Controllers\Api\User\UserPatientController;
 use Illuminate\Support\Facades\Route;
 // use Illuminate\Support\Facades\Artisan;
@@ -24,8 +25,7 @@ Route::middleware('guest')->group(function () {
 
 
     // pegar imagens
-    Route::get('/image-protect/{filename}', [UserController::class, 'getImageProtected'])
-        ->name('image.protected');
+    Route::get('/image-protect/{filename}', UserGetImageProtectedController::class);
 
     // //roda migrations no banco em produção
     // Route::get('/run-migrations', function () {
@@ -53,7 +53,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Authentication Routes
     Route::get('/logout/{user}', LogoutController::class);
-
 
     // Patient Routes
     Route::get('/patientCompleted', PatientCompletedController::class);

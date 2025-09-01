@@ -65,5 +65,56 @@ class Handler extends ExceptionHandler
                 'message' => $e->getMessage(),
             ], $statusCode);
         });
+
+        $this->renderable(function (PatientException $e, $request) {
+            $statusCode = $e->getCode() ?: 500;
+
+            if (env('APP_ENV') == 'local') {
+                return response()->json([
+                    'status' => false,
+                    'message' => $e->getMessage(),
+                    'error' => [$e->getTraceAsString()],
+                ], $statusCode);
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], $statusCode);
+        });
+
+        $this->renderable(function (MedicalException $e, $request) {
+            $statusCode = $e->getCode() ?: 500;
+
+            if (env('APP_ENV') == 'local') {
+                return response()->json([
+                    'status' => false,
+                    'message' => $e->getMessage(),
+                    'error' => [$e->getTraceAsString()],
+                ], $statusCode);
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], $statusCode);
+        });
+
+        $this->renderable(function (UserException $e, $request) {
+            $statusCode = $e->getCode() ?: 500;
+
+            if (env('APP_ENV') == 'local') {
+                return response()->json([
+                    'status' => false,
+                    'message' => $e->getMessage(),
+                    'error' => [$e->getTraceAsString()],
+                ], $statusCode);
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], $statusCode);
+        });
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Exceptions\UserException;
 use App\Http\Controllers\Api\Abstract\Crud;
 use App\Http\Requests\UserStoredRequest;
 use App\Http\traits\UploadImagemTrait;
@@ -9,7 +10,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Crud
 {
@@ -37,13 +37,17 @@ class UserController extends Crud
     public function store(UserStoredRequest $request)
     {
         try {
+
             $photo_name = $this->uploadImagem($request);
+
             $data_validated = $request->validated();
+
             $data_validated['photo'] = $photo_name;
+
             $user = User::create($data_validated);
 
             if (!$user) {
-                throw new Exception;
+                throw new UserException('Falha ao criar usuário.');
             }
 
             return response()->json([
@@ -54,7 +58,7 @@ class UserController extends Crud
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error creating user',
+                'message' => 'Error fetching user',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -66,12 +70,16 @@ class UserController extends Crud
     public function show(User $user)
     {
         try {
-            return $this->showGlobal($user);
-        } catch (ModelNotFoundException $e) {
+            $data = $this->showGlobal($user);
+
+            if ($data->isEmpty())
+                throw new UserException('Usuário não encontrado.', 404);
+
             return response()->json([
-                'status' => false,
-                'message' => 'User not found'
-            ], 404);
+                'status' => true,
+                'message' => 'User fetched successfully',
+                'data' => $data
+            ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
@@ -90,18 +98,18 @@ class UserController extends Crud
     {
         try {
             $user = User::findOrFail($id);
-            $user->update($request->all());
+            $photo_name = $this->uploadImagem($request);
+            $user->update(array_merge($request->all(), ['photo' => $photo_name]));
 
-            return response()->json([
-                'status' => true,
-                'message' => 'User updated successfully',
-                'data' => $user
-            ], 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'User not found'
-            ], 404);
+            if ($user) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'User updated successfully',
+                    'data' => $user
+                ], 200);
+            }
+
+            throw new UserException('Erro ao atualizar usuário.', 500);
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
@@ -117,16 +125,16 @@ class UserController extends Crud
     public function destroy(User $user)
     {
         try {
-            $this->destroyGlobal($user);
+            $data = $this->destroyGlobal($user);
+
+            if (!$data) {
+                throw new UserException('Erro ao deletar usuário.', 500);
+            }
+
             return response()->json([
                 'status' => true,
                 'message' => 'User deleted successfully'
             ], 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'status' => false,
-                'message' => 'User not found'
-            ], 404);
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
@@ -134,21 +142,5 @@ class UserController extends Crud
                 'error' => $e->getMessage()
             ], 500);
         }
-    }
-
-
-    public function getImageProtected(string $filename)
-    {
-        $caminho = "users/{$filename}";
-
-        if (!Storage::disk('local')->exists($caminho)) {
-            abort(404);
-        }
-
-
-        $arquivo = Storage::disk('local')->get($caminho);
-        $tipoMime = Storage::mimeType($caminho);
-
-        return response($arquivo)->header('Content-Type', $tipoMime);
     }
 }

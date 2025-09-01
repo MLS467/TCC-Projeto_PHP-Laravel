@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Patient;
 
+use App\Exceptions\PatientException;
 use App\Http\Controllers\Api\Abstract\Crud;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
@@ -24,42 +25,33 @@ class PatientController extends Crud
         return new PatientResourceCollection(Patient::with('user')->get());
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(StorePatientRequest $request)
     {
-        try {
-            return DB::transaction(function () use ($request) {
-                $patientData = $request->validated();
-                $patientData['flag_consultation'] = 0;
+        return DB::transaction(function () use ($request) {
+            $patientData = $request->validated();
+            $patientData['flag_consultation'] = 0;
 
-                $patient = Patient::create($patientData);
+            $patient = Patient::create($patientData);
 
-                if (!$patient) {
-                    throw new \Exception('Error creating patient');
-                }
+            if (!$patient)
+                throw new PatientException('Erro ao criar paciente', 404);
 
-                $user = User::find($patientData['user_id']);
-                if (!$user) {
-                    throw new \Exception('User not found');
-                }
+            $user = User::find($patientData['user_id']);
 
-                $user->update(['flag' => 1]);
+            if (!$user)
+                throw new PatientException('Usuário não encontrado', 404);
 
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Patient created and user updated successfully',
-                    'data' => $patient
-                ], 201);
-            });
-        } catch (\Exception $e) {
+            $user->update(['flag' => 1]);
+
             return response()->json([
-                'status' => false,
-                'message' => $e->getMessage()
-            ], 400);
-        }
+                'status' => true,
+                'message' => 'Patient created and user updated successfully',
+                'data' => $patient
+            ], 201);
+        });
     }
 
     /**
