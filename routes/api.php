@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ConsultationData\ConsultationController;
 use App\Http\Controllers\Api\Doctor\DoctorController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
+use App\Http\Controllers\Api\Dashboard\DashboardController;
 use App\Http\Controllers\Api\Record\MedicalRecordController;
 use App\Http\Controllers\Api\Nurse\Nurse;
 use App\Http\Controllers\Api\Patient\PatientCompletedController;
@@ -27,11 +28,8 @@ Route::middleware('guest')->group(function () {
     // pegar imagens
     Route::get('/image-protect/{filename}', UserGetImageProtectedController::class);
 
-    // //roda migrations no banco em produção
-    // Route::get('/run-migrations', function () {
-    //     Artisan::call('migrate');
-    //     return 'Migrations executadas com sucesso!';
-    // });
+
+    Route::get('/dashboard', DashboardController::class);
 });
 
 //Protected Routes (Authentication Required)
