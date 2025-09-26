@@ -5,11 +5,12 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Exceptions\AuthException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginResquest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function login(LoginResquest $request)
+    public function login(LoginResquest $request): JsonResponse
     {
         $credentials = $request->validated();
 

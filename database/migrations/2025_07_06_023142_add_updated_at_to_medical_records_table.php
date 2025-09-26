@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('medical_records', function (Blueprint $table) {
-            $table->timestamp('updated_at')->nullable()->after('created_at');
+            if (!Schema::hasColumn('medical_records', 'updated_at')) {
+                $table->timestamps();
+            }
         });
     }
 
