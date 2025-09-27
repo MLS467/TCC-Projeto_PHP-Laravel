@@ -80,7 +80,7 @@ function createDoctor($user_id, $adm_id)
     ]);
 }
 
-describe('testing features of Auth file if return success', function () {
+describe('testing features of Auth file', function () {
 
     it('check if login for admin return success', function () {
         $user = createUser();
@@ -91,7 +91,7 @@ describe('testing features of Auth file if return success', function () {
             Adm::where('user_id', $adm->user->id)->exists()
         )->toBeTrue();
 
-        $result =  $this->post('api/login', [
+        $result =  $this->postJson('api/login', [
             'email' => $adm->user->email,
             'password' => 'password',
         ]);
@@ -105,6 +105,7 @@ describe('testing features of Auth file if return success', function () {
         expect($response_json)->toHaveKeys(['user', 'token']);
     }); //->skip();
 
+
     it('check if login for attendant return success', function () {
         $user = createUser();
 
@@ -114,11 +115,11 @@ describe('testing features of Auth file if return success', function () {
 
 
         expect(
-            Adm::where('user_id', $attendant->user->id)->exists()
+            Attendant::where('user_id', $attendant->user->id)->exists()
         )->toBeTrue();
 
 
-        $result =  $this->post('api/login', [
+        $result =  $this->postJson('api/login', [
             'email' => $attendant->user->email,
             'password' => 'password',
         ]);
@@ -133,6 +134,7 @@ describe('testing features of Auth file if return success', function () {
         expect($response_json)->toHaveKeys(['user', 'token']);
     }); //->skip();
 
+
     it('check if login for Doctor return success', function () {
         $user = createUser();
 
@@ -142,11 +144,11 @@ describe('testing features of Auth file if return success', function () {
 
 
         expect(
-            Adm::where('user_id', $doctor->user->id)->exists()
+            Doctor::where('user_id', $doctor->user->id)->exists()
         )->toBeTrue();
 
 
-        $result = $this->post('api/login', [
+        $result = $this->postJson('api/login', [
             'email' => $doctor->user->email,
             'password' => 'password',
         ]);
@@ -161,6 +163,7 @@ describe('testing features of Auth file if return success', function () {
         expect($response_json)->toHaveKeys(['user', 'token']);
     }); //->skip();
 
+
     it('check if login for Nurse return success', function () {
         $user = createUser();
 
@@ -170,11 +173,11 @@ describe('testing features of Auth file if return success', function () {
 
 
         expect(
-            Adm::where('user_id', $Nurse->user->id)->exists()
+            Nurse::where('user_id', $Nurse->user->id)->exists()
         )->toBeTrue();
 
 
-        $result =  $this->post('api/login', [
+        $result =  $this->postJson('api/login', [
             'email' => $Nurse->user->email,
             'password' => 'password',
         ]);
@@ -187,5 +190,35 @@ describe('testing features of Auth file if return success', function () {
 
         $response_json = json_decode($result->content(), true);
         expect($response_json)->toHaveKeys(['user', 'token']);
+    });
+
+
+    it('testing with credentials wrongs', function () {
+
+        $user = createUser();
+
+        $adm = createAdm($user->id);
+
+        expect(
+            Adm::where('user_id', $adm->user->id)->exists()
+        )->toBeTrue();
+
+        $result =  $this->postJson('api/login', [
+            'email' => $adm->user->email,
+            'password' => 'password1546',
+        ]);
+
+        expect($result->status())->not()->toBe(200);
+    });
+
+
+    it('testing with credentials empties', function () {
+
+        $result =  $this->postJson('api/login', [
+            'email' => '',
+            'password' => '',
+        ]);
+
+        expect($result->status())->not()->toBe(302); // não passa na validação
     });
 });
