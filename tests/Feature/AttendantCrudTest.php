@@ -40,7 +40,7 @@ describe('Testing crud of Model Attendant', function () {
             'phone' => '98855662233',
             'cpf' => \Faker\Factory::create()->unique()->numerify('###########'),
             'sex' => \Faker\Factory::create()->randomElement(['masculino', 'feminino']),
-            'birth' => \Faker\Factory::create()->date(),
+            'birth' => '2000/01/01 01:00:00',
             'photo' => \Faker\Factory::create()->imageUrl(),
             'place_of_birth' => \Faker\Factory::create()->city(),
             'city' => \Faker\Factory::create()->city(),

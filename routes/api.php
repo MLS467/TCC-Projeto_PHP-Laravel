@@ -27,13 +27,13 @@ Route::middleware('guest')->group(function () {
 
     // pegar imagens
     Route::get('/image-protect/{filename}', UserGetImageProtectedController::class);
-
-
-    Route::get('/dashboard', DashboardController::class);
 });
 
 //Protected Routes (Authentication Required)
 Route::middleware('auth:sanctum')->group(function () {
+
+    // dashboard data
+    Route::get('/dashboard', DashboardController::class);
 
     // User Routes
     Route::get('/user/patient', UserPatientController::class);
