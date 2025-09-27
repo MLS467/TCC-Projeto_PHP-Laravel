@@ -28,7 +28,7 @@ class AdmStoreRequest extends FormRequest
             'email_verified_at' => 'nullable|date',
             'password' => 'required|string|min:8',
             'phone' => 'nullable|string|max:20',
-            'sex' => 'required|in:male,female,other',
+            'sex' => 'required|in:masculino,feminino,outro',
             'birth' => 'required|date',
             'photo' => 'nullable|url',
             'place_of_birth' => 'nullable|string|max:255',
