@@ -10,16 +10,24 @@ class SearchForPatientByCPFController extends Controller
 {
     public function __invoke(string $cpf)
     {
-        $user = User::where('cpf', $cpf)->get();
+        try {
 
-        if (!$user->isEmpty()) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Patient found',
-                'data' => $user
-            ], 200);
+            $user = User::where('cpf', $cpf)->get();
+
+            if (!$user->isEmpty()) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Patient found',
+                    'data' => $user
+                ], 200);
+            }
+
+            throw new PatientException('Paciente não encontrado');
+        } catch (PatientException $e) {
+            return response()->json(
+                $e->getMessage(),
+                404
+            );
         }
-
-        throw new PatientException('Paciente não encontrado', 404);
     }
 }
