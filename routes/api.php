@@ -28,18 +28,6 @@ Route::middleware('guest')->group(function () {
 
     // pegar imagens
     Route::get('/image-protect/{filename}', UserGetImageProtectedController::class);
-
-
-    Route::get('/migrate', function () {
-        try {
-            Artisan::call('migrate', [
-                '--force' => true // força rodar em produção se necessário
-            ]);
-            return "Migrations executadas com sucesso!";
-        } catch (\Exception $e) {
-            return "Erro ao executar migrations: " . $e->getMessage();
-        }
-    });
 });
 
 
