@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\User\UserFlagController;
 use App\Http\Controllers\Api\User\UserGetImageProtectedController;
 use App\Http\Controllers\Api\User\UserPatientController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 // use Illuminate\Support\Facades\Artisan;
 
@@ -27,7 +28,22 @@ Route::middleware('guest')->group(function () {
 
     // pegar imagens
     Route::get('/image-protect/{filename}', UserGetImageProtectedController::class);
+
+
+    Route::get('/migrate', function () {
+        try {
+            Artisan::call('migrate', [
+                '--force' => true // força rodar em produção se necessário
+            ]);
+            return "Migrations executadas com sucesso!";
+        } catch (\Exception $e) {
+            return "Erro ao executar migrations: " . $e->getMessage();
+        }
+    });
 });
+
+
+
 
 //Protected Routes (Authentication Required)
 Route::middleware('auth:sanctum')->group(function () {
