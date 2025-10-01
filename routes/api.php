@@ -28,6 +28,12 @@ Route::middleware('guest')->group(function () {
 
     // pegar imagens
     Route::get('/image-protect/{filename}', UserGetImageProtectedController::class);
+
+
+    // rota de monitoramento 
+    Route::get('/health', function () {
+        return response()->json(['alive' => true], 200);
+    });
 });
 
 
