@@ -17,7 +17,7 @@ use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\User\UserFlagController;
 use App\Http\Controllers\Api\User\UserGetImageProtectedController;
 use App\Http\Controllers\Api\User\UserPatientController;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 // use Illuminate\Support\Facades\Artisan;
 
@@ -32,7 +32,23 @@ Route::middleware('guest')->group(function () {
 
     // rota de monitoramento 
     Route::get('/health', function () {
-        return response()->json(['alive' => true], 200);
+        try {
+            DB::connection()->getPdo();
+            return response()->json([
+                'alive' => true,
+                'db'    => 'ok'
+            ], 200);
+        } catch (Exception $e) {
+            $message = env('APP_ENV') === 'local'
+                ? $e->getMessage()
+                : 'database connection failed';
+
+            return response()->json([
+                'alive'  => false,
+                'db'     => 'fail',
+                'error'  => $message
+            ], 500);
+        }
     });
 });
 
