@@ -1,125 +1,128 @@
 <?php
 
 use App\Models\PatientModel;
-use Illuminate\Support\Facades\DB;
-
-it('example', function () {
-    $user_admin = createUser();
-
-    $attendant_user = createUser();
-
-    createAdm($user_admin->id);
-
-    $attendant = createAttendant($attendant_user->id, $user_admin->id);
-
-    $patient_user = createUser();
 
 
-    auth()->loginUsingId($user_admin->id);
+describe('Check if crud of patient is ok', function () {
 
-    $token = auth()->user()->createToken('test-token')->plainTextToken;
+    it('testing crud complete', function () {
+        $user_admin = createUser();
 
+        $attendant_user = createUser();
 
-    $validPatientData = [
-        'user_id' => $patient_user->id,
-        'heart_rate' => 80,                    // int, não string
-        'respiratory_rate' => 16,              // int, não string  
-        'oxygen_saturation' => 98,             // <= 100
-        'temperature' => 36.5,                 // <= 45
-        'emergency_phone' => '11999887766',    // 8-15 dígitos
-        'responsible_name' => 'João Silva',
-        'blood_type' => 'O+',
-        'patient_condition' => 'Severus'
-    ];
+        createAdm($user_admin->id);
 
-    $result_post_patient = $this->withHeaders([
-        'Authorization' => 'Bearer ' . $token
-    ])->postJson('api/patient', $validPatientData);
+        $attendant = createAttendant($attendant_user->id, $user_admin->id);
+
+        $patient_user = createUser();
 
 
-    expect($result_post_patient->status())->toBe(201);
+        auth()->loginUsingId($user_admin->id);
 
-    expect(PatientModel::where('id', 1)->exists())->toBeTrue();
-
-
-
-    // READ ALL
-
-    $request_patient = $this->get('api/patient/1');
-    expect($request_patient->content())->toBeJson();
-
-    $patient_data = json_decode($request_patient->content(), true);
+        $token = auth()->user()->createToken('test-token')->plainTextToken;
 
 
-    expect($patient_data['data'])->toHaveKeys([
-        'patient_condition',
-        'oxygen_saturation',
-        'difficulty_breathing',
-    ]);
+        $validPatientData = [
+            'user_id' => $patient_user->id,
+            'heart_rate' => 80,                    // int, não string
+            'respiratory_rate' => 16,              // int, não string  
+            'oxygen_saturation' => 98,             // <= 100
+            'temperature' => 36.5,                 // <= 45
+            'emergency_phone' => '11999887766',    // 8-15 dígitos
+            'responsible_name' => 'João Silva',
+            'blood_type' => 'O+',
+            'patient_condition' => 'Severus'
+        ];
 
-    expect($patient_data['data']['user'])->toHaveKeys([
-        'name',
-        'email',
-        'birth'
-    ]);
+        $result_post_patient = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->postJson('api/patient', $validPatientData);
+
+
+        expect($result_post_patient->status())->toBe(201);
+
+        expect(PatientModel::where('id', 1)->exists())->toBeTrue();
 
 
 
-    // READ ONE
+        // READ ALL
 
-    $request_patient = $this->get('api/patient');
-    expect($request_patient->content())->toBeJson();
+        $request_patient = $this->get('api/patient/1');
+        expect($request_patient->content())->toBeJson();
 
-    expect($request_patient->status())->toBe(200);
-    $patient_data = json_decode($request_patient->content(), true);
-
-
-    expect($patient_data['data'][0])->toHaveKeys([
-        'patient_condition',
-        'oxygen_saturation',
-        'difficulty_breathing',
-    ]);
-
-    expect($patient_data['data'][0]['user'])->toHaveKeys([
-        'name',
-        'email',
-        'birth'
-    ]);
+        $patient_data = json_decode($request_patient->content(), true);
 
 
-    // UPDATE
-    $data = [
-        'oxygen_saturation' => 22,
-        'difficulty_breathing' => 'on',
-        'temperature' => 38
-    ];
+        expect($patient_data['data'])->toHaveKeys([
+            'patient_condition',
+            'oxygen_saturation',
+            'difficulty_breathing',
+        ]);
+
+        expect($patient_data['data']['user'])->toHaveKeys([
+            'name',
+            'email',
+            'birth'
+        ]);
 
 
-    $result_put = $this->putJson('api/patient/1', $data);
 
-    expect($result_put->status())->toBe(200);
-    expect($result_put->content())->toBeGreaterThan(1);
-    expect($result_put->content())->toBeJson();
+        // READ ONE
 
-    $result_put_array = json_decode($result_put->content(), true);
+        $request_patient = $this->get('api/patient');
+        expect($request_patient->content())->toBeJson();
 
-
-    expect($result_put_array['message'])->toBe("updated successfully");
-    expect($result_put_array['data']['oxygen_saturation'])->toBe(22);
-    expect($result_put_array)->toBeArray();
+        expect($request_patient->status())->toBe(200);
+        $patient_data = json_decode($request_patient->content(), true);
 
 
-    // delete
+        expect($patient_data['data'][0])->toHaveKeys([
+            'patient_condition',
+            'oxygen_saturation',
+            'difficulty_breathing',
+        ]);
 
-    $result_delete = $this->deleteJson('api/patient/1');
+        expect($patient_data['data'][0]['user'])->toHaveKeys([
+            'name',
+            'email',
+            'birth'
+        ]);
 
-    expect($result_delete->content())->toBeJson();
-    expect($result_delete->content())->toBeGreaterThan(1);
-    expect($result_delete->status())->toBe(200);
 
-    $result_delete_array = json_decode($result_delete->content(), true);
+        // UPDATE
+        $data = [
+            'oxygen_saturation' => 22,
+            'difficulty_breathing' => 'on',
+            'temperature' => 38
+        ];
 
-    expect($result_delete_array["message"])->toBe("Model deleted successfully");
 
-    expect(PatientModel::where('id', 1)->exists())->toBeFalse();
+        $result_put = $this->putJson('api/patient/1', $data);
+
+        expect($result_put->status())->toBe(200);
+        expect($result_put->content())->toBeGreaterThan(1);
+        expect($result_put->content())->toBeJson();
+
+        $result_put_array = json_decode($result_put->content(), true);
+
+
+        expect($result_put_array['message'])->toBe("updated successfully");
+        expect($result_put_array['data']['oxygen_saturation'])->toBe(22);
+        expect($result_put_array)->toBeArray();
+
+
+        // delete
+
+        $result_delete = $this->deleteJson('api/patient/1');
+
+        expect($result_delete->content())->toBeJson();
+        expect($result_delete->content())->toBeGreaterThan(1);
+        expect($result_delete->status())->toBe(200);
+
+        $result_delete_array = json_decode($result_delete->content(), true);
+
+        expect($result_delete_array["message"])->toBe("Model deleted successfully");
+
+        expect(PatientModel::where('id', 1)->exists())->toBeFalse();
+    });
 });
