@@ -84,7 +84,7 @@ describe('Testing crud of Model Adm', function () {
             ->toBe(200);
 
         expect(json_decode($result_put->content(), true)['message'])
-            ->toBe("Adm updated successfully");
+            ->toBe("updated successfully");
 
 
         // testa se o valor foi modificado

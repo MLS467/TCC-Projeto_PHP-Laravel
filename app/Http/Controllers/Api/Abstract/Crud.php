@@ -92,7 +92,7 @@ abstract class Crud extends Controller
             if (User::find($user_id)->update($request->validated())) {
 
                 if ($model->update($request->validated())) {
-                    return response()->json(['status' => true, 'message' => 'Adm updated successfully', 'data' => $model->load('user')], 200);
+                    return response()->json(['status' => true, 'message' => 'updated successfully', 'data' => $model->load('user')], 200);
                 } else
                     throw new \Exception("Error updating Adm {$this->$model->id}");
             } else
