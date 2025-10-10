@@ -27,6 +27,7 @@ function createPatient($user_id)
         'responsible_name' => \Faker\Factory::create()->name,
         'emergency_phone' => \Faker\Factory::create()->phoneNumber,
         'flag_triage' => 1,
+        'responsible_specialist' => 'cardiologista',
         'patient_condition' => \Faker\Factory::create()->randomElement(['critical', 'serious', 'mild', 'moderate']),
     ]);
 }
@@ -100,7 +101,7 @@ function createDoctor($user_id, $adm_id)
         'user_id' => $user_id,
         'id_administrator_fk' => $adm_id,
         'crm' => strtoupper(\Faker\Factory::create()->bothify('CRM####')),
-        'specialty' =>  \Faker\Factory::create()->randomElement($especialidades),
+        'specialty' => $especialidades[0],
         'active' =>  \Faker\Factory::create()->boolean(80)
     ]);
 }
