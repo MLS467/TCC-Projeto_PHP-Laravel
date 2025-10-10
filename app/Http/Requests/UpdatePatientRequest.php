@@ -51,6 +51,7 @@ class UpdatePatientRequest extends FormRequest
             'edema' => 'nullable|integer',
             'nausea' => 'nullable|integer',
             'bleeding' => 'nullable|integer',
+            'responsible_specialist' => 'nullable|string|max:100'
         ];
     }
 
@@ -106,6 +107,7 @@ class UpdatePatientRequest extends FormRequest
             'temperature.numeric' => 'A temperatura deve ser um número.',
             'flag_triage.required' => 'O flag de triagem é obrigatório.',
             'flag_triage.in' => 'O flag de triagem deve ser 0 ou 1.',
+            'responsible_specialist.max' => 'O campo "especialista responsável" deve ter no máximo 100 caracteres.',
 
         ];
     }

@@ -43,6 +43,7 @@ class StorePatientRequest extends FormRequest
             'allergy' => 'nullable|string|max:500',
             'emergency_phone' => 'nullable|string|regex:/^\d{8,15}$/',
             'flag_consultation' => 'integer',
+            'responsible_specialist' => 'nullable|string|max:100'
         ];
     }
 
@@ -76,7 +77,8 @@ class StorePatientRequest extends FormRequest
             'allergy.max' => 'As alergias não podem ultrapassar 500 caracteres.',
             'emergency_phone.regex' => 'O telefone de emergência deve ser um número entre 8 e 15 dígitos.',
             'flag_consultation' => 'O campo flag_consultation é obrigatório.',
-            'patient_condition' => 'O campo condição do paciente é obrigatório.'
+            'patient_condition' => 'O campo condição do paciente é obrigatório.',
+            'responsible_specialist.string' => "O campo deve ser string"
         ];
     }
 

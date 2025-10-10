@@ -33,6 +33,7 @@ class PatientModel extends Model
         'flag_triage',
         'flag_consultation',
         'patient_condition',
+        'responsible_specialist'
     ];
 
     public function user()

@@ -11,7 +11,10 @@ class UserFlagController extends Controller
     public function __invoke()
     {
         try {
-            return User::where([['flag', '=', '0'], ['role', '=', 'patient']])->get();
+            return User::where([
+                ['flag', '=', '0'],
+                ['role', '=', 'patient']
+            ])->get();
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
