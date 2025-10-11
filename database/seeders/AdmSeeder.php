@@ -12,6 +12,10 @@ class AdmSeeder extends Seeder
      */
     public function run(): void
     {
-        Adm::factory(10)->create();
+        Adm::insert([
+            'id' => 1,
+            'user_id' => 6,
+            'active' => \Faker\Factory::create()->boolean(),
+        ]);
     }
 }

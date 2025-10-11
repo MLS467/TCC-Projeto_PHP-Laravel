@@ -13,6 +13,12 @@ class NurseSeeder extends Seeder
      */
     public function run(): void
     {
-        Nurse::factory(10)->create();
+        Nurse::insert([
+            'user_id' => 2,
+            'id_administrator_fk' => 1,
+            'active' => \Faker\Factory::create()->boolean(),
+            'coren' => \Faker\Factory::create()->bothify('########'),
+            'specialty' => \Faker\Factory::create()->word(),
+        ]);
     }
 }

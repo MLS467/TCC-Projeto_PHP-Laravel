@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Attendant;
 use Illuminate\Database\Seeder;
 
 class AttendantSeeder extends Seeder
@@ -12,6 +12,10 @@ class AttendantSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Attendant::insert([
+            'user_id' => 3,
+            'id_administrator_fk' => 1,
+            'active' => \Faker\Factory::create()->boolean()
+        ]);
     }
 }

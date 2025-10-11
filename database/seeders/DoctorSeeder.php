@@ -12,6 +12,21 @@ class DoctorSeeder extends Seeder
      */
     public function run(): void
     {
-        Doctor::factory(10)->create();
+        Doctor::insert([
+            [
+                'user_id' => 4,
+                'id_administrator_fk' => 1,
+                'crm' => strtoupper(\Faker\Factory::create()->bothify('CRM####')),
+                'specialty' => 'cardiologista',
+                'active' => \Faker\Factory::create()->boolean(80)
+            ],
+            [
+                'user_id' => 5,
+                'id_administrator_fk' => 1,
+                'crm' => strtoupper(\Faker\Factory::create()->bothify('CRM####')),
+                'specialty' => 'pediatra',
+                'active' => \Faker\Factory::create()->boolean(80)
+            ],
+        ]);
     }
 }
