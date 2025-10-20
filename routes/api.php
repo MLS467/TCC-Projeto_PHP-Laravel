@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Adm\AdmController;
 use App\Http\Controllers\Api\Attendant\Attendant;
+use App\Http\Controllers\Api\Bed\BedController;
 use App\Http\Controllers\Api\ConsultationData\ConsultationController;
 use App\Http\Controllers\Api\Doctor\DoctorController;
 use App\Http\Controllers\Api\Auth\LoginController;
@@ -95,6 +96,9 @@ Route::middleware('auth:sanctum')->group(function () {
         '/adm' => AdmController::class,
 
         // Consultation Routes
-        '/consultation' => ConsultationController::class
+        '/consultation' => ConsultationController::class,
+
+        // bed
+        '/bed-management' => BedController::class
     ]);
 });

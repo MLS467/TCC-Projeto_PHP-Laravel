@@ -8,8 +8,10 @@ use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
 use App\Http\Resources\PatientResource;
 use App\Http\Resources\PatientResourceCollection;
+use App\Models\Bed;
 use App\Models\PatientModel as Patient;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class PatientController extends Crud
@@ -45,6 +47,25 @@ class PatientController extends Crud
                 throw new PatientException('Usuário não encontrado', 404);
 
             $user->update(['flag' => 1]);
+
+            if ($patientData['patient_condition'] === 'critical') {
+                $bed = Bed::where('user_id', '=', null)
+                    ->where('status_bed', '=', false)
+                    ->first();
+
+                if (!$bed) {
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Não há mais leitos, espere a liberação para proseguir',
+                        'data' => $patient
+                    ], 200);
+                }
+
+                $bed->user_id = $patient->user->id;
+                $bed->status_bed = true;
+                $bed->updated_at = Carbon::now();
+                $bed->save();
+            }
 
             return response()->json([
                 'status' => true,

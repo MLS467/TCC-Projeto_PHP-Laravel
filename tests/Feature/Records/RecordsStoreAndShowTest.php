@@ -5,7 +5,7 @@ use Carbon\Carbon;
 it('Check if record route store and show', function () {
 
     $data = [
-        'id' => bcrypt(Carbon::now()),
+        'id' => Faker\Factory::create()->numberBetween(10000, 999999),
         'full_name' => 'John Doe',
         'cpf' => '11111111111',
         'email' => 'teste@teste123.com',
@@ -62,6 +62,7 @@ it('Check if record route store and show', function () {
 
 
     expect($result->status())->toBe(201);
+
     $result_data_post = json_decode($result->content(), true);
 
 

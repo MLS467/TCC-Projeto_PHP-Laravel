@@ -18,7 +18,6 @@ class UserSeed extends Seeder
     {
         User::insert([
             [
-                'id' => 1,
                 'name' => 'Ichigo Kurosaki',
                 'email' => 'ichigo@bleach.com',
                 'email_verified_at' => now(),
@@ -38,7 +37,6 @@ class UserSeed extends Seeder
                 'age' => 24,
             ],
             [
-                'id' => 2,
                 'name' => 'Rukia Kuchiki',
                 'email' => 'teste@nurse.com',
                 'email_verified_at' => now(),
@@ -58,7 +56,6 @@ class UserSeed extends Seeder
                 'age' => 23,
             ],
             [
-                'id' => 3,
                 'name' => 'Orihime Inoue',
                 'email' => 'teste@attendant.com',
                 'email_verified_at' => now(),
@@ -78,7 +75,6 @@ class UserSeed extends Seeder
                 'age' => 22,
             ],
             [
-                'id' => 4,
                 'name' => 'Uryū Ishida',
                 'email' => 'teste@doc.com',
                 'email_verified_at' => now(),
@@ -98,7 +94,6 @@ class UserSeed extends Seeder
                 'age' => 24,
             ],
             [
-                'id' => 5,
                 'name' => 'Renji Abarai',
                 'email' => 'teste@doc2.com',
                 'email_verified_at' => now(),
@@ -118,7 +113,6 @@ class UserSeed extends Seeder
                 'age' => 25,
             ],
             [
-                'id' => 6,
                 'name' => 'Byakuya Kuchiki',
                 'email' => 'teste@adm.com',
                 'email_verified_at' => now(),
@@ -138,7 +132,6 @@ class UserSeed extends Seeder
                 'age' => 26,
             ],
             [
-                'id' => 7,
                 'name' => 'Tōshirō Hitsugaya',
                 'email' => 'teste@nurse2.com',
                 'email_verified_at' => now(),
@@ -158,7 +151,6 @@ class UserSeed extends Seeder
                 'age' => 21,
             ],
             [
-                'id' => 8,
                 'name' => 'Kisuke Urahara',
                 'email' => 'teste@doc3.com',
                 'email_verified_at' => now(),
@@ -178,7 +170,6 @@ class UserSeed extends Seeder
                 'age' => 36,
             ],
             [
-                'id' => 9,
                 'name' => 'Yoruichi Shihōin',
                 'email' => 'yoruichi@bleach.com',
                 'email_verified_at' => now(),
@@ -198,7 +189,6 @@ class UserSeed extends Seeder
                 'age' => 29,
             ],
             [
-                'id' => 10,
                 'name' => 'Kenpachi Zaraki',
                 'email' => 'kenpachi@bleach.com',
                 'email_verified_at' => now(),

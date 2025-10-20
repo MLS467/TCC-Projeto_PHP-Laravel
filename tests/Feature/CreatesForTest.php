@@ -14,21 +14,21 @@ function createPatient($user_id)
 
     $blood_type = \Faker\Factory::create()->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']);
     return PatientModel::create([
-        'user_id' => $user_id,
-        'allergy' => \Faker\Factory::create()->text(100),
-        'sugery_history' => \Faker\Factory::create()->text(100),
-        'blood_type' => $blood_type,
-        'blood_pressure' => \Faker\Factory::create()->randomFloat(2, 60, 200),
-        'heart_rate' => \Faker\Factory::create()->randomFloat(2, 60, 200),
-        'respiratory_rate' => \Faker\Factory::create()->randomFloat(2, 60, 200),
-        'oxygen_saturation' => \Faker\Factory::create()->randomFloat(2, 60, 200),
-        'temperature' => \Faker\Factory::create()->randomFloat(2, 60, 200),
-        'chief_complaint' => \Faker\Factory::create()->text(100),
-        'responsible_name' => \Faker\Factory::create()->name,
-        'emergency_phone' => \Faker\Factory::create()->phoneNumber,
-        'flag_triage' => 1,
-        'responsible_specialist' => 'cardiologista',
-        'patient_condition' => \Faker\Factory::create()->randomElement(['critical', 'serious', 'mild', 'moderate']),
+        "user_id" => $user_id,
+        "allergy" => "Alergia a penicilina.",
+        "sugery_history" => "Cirurgia de apendicite em 2015.",
+        "blood_type" => "A+",
+        "blood_pressure" => 120,
+        "heart_rate" => 78,
+        "respiratory_rate" => 18,
+        "oxygen_saturation" => 98,
+        "temperature" => 36.8,
+        "chief_complaint" => "Dor no peito e falta de ar leve desde ontem.",
+        "responsible_name" => "Carlos Pereira",
+        "emergency_phone" => "11987654321",
+        "flag_triage" => 1,
+        "patient_condition" => "serious",
+        'responsible_specialist' => 'cardiologista'
     ]);
 }
 
@@ -89,19 +89,12 @@ function createNurse($user_id, $adm_id)
 
 function createDoctor($user_id, $adm_id)
 {
-    $especialidades = [
-        'Cardiologista',
-        'Pediatra',
-        'Ortopedista',
-        'Dermatologista',
-        'Neurologista'
-    ];
 
     return Doctor::create([
         'user_id' => $user_id,
         'id_administrator_fk' => $adm_id,
         'crm' => strtoupper(\Faker\Factory::create()->bothify('CRM####')),
-        'specialty' => $especialidades[0],
+        'specialty' => 'Cardiologista',
         'active' =>  \Faker\Factory::create()->boolean(80)
     ]);
 }

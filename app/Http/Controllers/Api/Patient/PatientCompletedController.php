@@ -19,7 +19,8 @@ class PatientCompletedController extends Controller
             ], 404);
         }
 
-        return PatientModel::where('flag_triage', 1)
+        return PatientModel::with(['user', 'bed'])
+            ->where('flag_triage', 1)
             ->where('flag_consultation', 0) // Adiciona filtro para mostrar apenas quando flag_consultition = 0
             ->where('responsible_specialist', strtolower($doctor->specialty)) // Filtra pelo especialista responsável
             ->orderByRaw("CASE 
@@ -30,7 +31,6 @@ class PatientCompletedController extends Controller
                             ELSE 5
                         END")
             ->orderBy('created_at', 'asc')
-            ->get()
-            ->load('user');
+            ->get();
     }
 }

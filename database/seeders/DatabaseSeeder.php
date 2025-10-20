@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             AttendantSeeder::class,
             DoctorSeeder::class,
             NurseSeeder::class,
+            BedSeeder::class
         ]);
     }
 }

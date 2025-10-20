@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class PatientModel extends Model
 {
@@ -43,5 +44,10 @@ class PatientModel extends Model
     public function attendant()
     {
         return $this->belongsTo(Attendant::class);
+    }
+
+    public function bed()
+    {
+        return $this->hasOneThrough(Bed::class, User::class, 'id', 'user_id', 'user_id', 'id');
     }
 }

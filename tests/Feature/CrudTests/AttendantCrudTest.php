@@ -31,25 +31,25 @@ describe('Testing crud of Model Attendant', function () {
         $result_post = $this->withHeaders([
             'Authorization' => "Bearer {$values_login->json('token')}"
         ])->postJson('api/attendant', [
-            'id_administrator_fk' => $adm->id,
-            'active' => true,
-            'name' => \Faker\Factory::create()->name(),
-            'email' => \Faker\Factory::create()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => 'password', // Senha padrão
-            'phone' => '98855662233',
-            'cpf' => \Faker\Factory::create()->unique()->numerify('###########'),
-            'sex' => \Faker\Factory::create()->randomElement(['masculino', 'feminino']),
-            'birth' => '2000/01/01 01:00:00',
-            'photo' => \Faker\Factory::create()->imageUrl(),
-            'place_of_birth' => \Faker\Factory::create()->city(),
-            'city' => \Faker\Factory::create()->city(),
-            'neighborhood' => \Faker\Factory::create()->word(),
-            'street' => \Faker\Factory::create()->streetName(),
-            'block' => \Faker\Factory::create()->buildingNumber(),
-            'apartment' => \Faker\Factory::create()->word(),
-            'role' => 'attendant',
-            'age' => \Faker\Factory::create()->numberBetween(18, 99),
+            "id_administrator_fk" => $adm->id,
+            "active" => true,
+            "name" => "Mariana Costa",
+            "email" => "mariana.costa@example.com",
+            "email_verified_at" => "2025-10-19T17:00:00Z",
+            "password" => "password",
+            "phone" => "98855662233",
+            "cpf" => "12345678901",
+            "sex" => "feminino",
+            "birth" => "2000-01-01 01:00:00",
+            "photo" => "https://randomuser.me/api/portraits/women/65.jpg",
+            "place_of_birth" => "Rio de Janeiro",
+            "city" => "Niterói",
+            "neighborhood" => "Icaraí",
+            "street" => "Rua das Palmeiras",
+            "block" => "25",
+            "apartment" => "302",
+            "role" => "attendant",
+            "age" => 25
         ]);
 
         // testa se a resposta ta correta
