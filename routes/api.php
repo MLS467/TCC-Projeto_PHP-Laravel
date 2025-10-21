@@ -50,6 +50,28 @@ Route::middleware('guest')->group(function () {
             ], 500);
         }
     });
+
+    // Rota temporária para limpar cache no Render (REMOVER DEPOIS!)
+    Route::get('/clear-cache-render', function () {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('cache:clear');
+            \Illuminate\Support\Facades\Artisan::call('config:clear');
+            \Illuminate\Support\Facades\Artisan::call('route:clear');
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cache cleared successfully',
+                'timestamp' => now()
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error clearing cache',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    });
 });
 
 

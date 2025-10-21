@@ -77,7 +77,14 @@ if ! grep -q "APP_KEY=base64:" /var/www/html/.env; then\n\
     php artisan key:generate --no-interaction\n\
 fi\n\
 \n\
-# Cache de configuração\n\
+# Limpa cache e otimiza autoloader\n\
+composer dump-autoload --optimize\n\
+php artisan cache:clear\n\
+php artisan config:clear\n\
+php artisan route:clear\n\
+php artisan view:clear\n\
+\n\
+# Cache de configuração para produção\n\
 php artisan config:cache\n\
 php artisan route:cache\n\
 php artisan view:cache\n\
