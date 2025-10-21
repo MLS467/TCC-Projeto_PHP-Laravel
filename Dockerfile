@@ -21,10 +21,12 @@ RUN composer dump-autoload --optimize
 # Etapa 2: Container final com Apache e PHP
 FROM php:8.2-apache
 
-# Instala extensões PHP necessárias (com pdo_pgsql)
+# Instala extensões PHP necessárias (com pdo_pgsql e SSL para emails)
 RUN apt-get update && apt-get install -y \
     libzip-dev unzip git curl libpng-dev libonig-dev libxml2-dev zip \
-    libpq-dev  # Instala as bibliotecas de desenvolvimento do PostgreSQL
+    libpq-dev \
+    ca-certificates \
+    openssl  # Instala as bibliotecas de desenvolvimento do PostgreSQL e SSL
 
 # <--- adiciona aqui limita requisições abusivas
 RUN apt-get update && apt-get install -y \
@@ -39,8 +41,11 @@ RUN mkdir -p /var/log/apache2/evasive && chown -R www-data:www-data /var/log/apa
 
 COPY ./evasive.conf /etc/apache2/mods-available/evasive.conf
 
-# Instala a extensão pdo_pgsql
-RUN docker-php-ext-install pdo pdo_pgsql zip
+# Instala extensões PHP necessárias (incluindo para email)
+RUN docker-php-ext-install pdo pdo_pgsql zip mbstring curl iconv
+
+# Habilita extensão OpenSSL (geralmente já vem habilitada, mas garantindo)
+RUN docker-php-ext-enable openssl || true
 
 # Ativa o mod_rewrite no Apache (necessário para Laravel)
 RUN a2enmod rewrite
@@ -62,6 +67,9 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
+
+# Executa os testes - se falharem, o build para aqui
+RUN php artisan test || (echo "❌ TESTES FALHARAM - DEPLOY CANCELADO" && exit 1)
 
 # Cria script de inicialização
 RUN echo '#!/bin/bash\n\
