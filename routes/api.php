@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Doctor\DoctorController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Dashboard\DashboardController;
+use App\Http\Controllers\Api\Mail\AtendeBemMail;
 use App\Http\Controllers\Api\Record\MedicalRecordController;
 use App\Http\Controllers\Api\Nurse\Nurse;
 use App\Http\Controllers\Api\Patient\PatientCompletedController;
@@ -16,22 +17,16 @@ use App\Http\Controllers\Api\Record\ShowRecordsByCPFController;
 use App\Http\Controllers\Api\Patient\SearchForPatientByCPFController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\User\UserFlagController;
-use App\Http\Controllers\Api\User\UserGetImageProtectedController;
 use App\Http\Controllers\Api\User\UserPatientController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-// use Illuminate\Support\Facades\Artisan;
 
 Route::middleware('guest')->group(function () {
     // Autenticação
-    Route::post('/login', [LoginController::class, 'login'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
 
+    Route::post('/send-reset-email', [AtendeBemMail::class, 'sendEmail']);
 
-    // pegar imagens
-    Route::get('/image-protect/{filename}', UserGetImageProtectedController::class);
-
-
-    // rota de monitoramento 
     Route::get('/health', function () {
         try {
             DB::connection()->getPdo();

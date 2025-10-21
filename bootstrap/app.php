@@ -29,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Excluir CSRF de rotas da API
         $middleware->validateCsrfTokens(except: [
             'api/*',
+            '/reset-password',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
