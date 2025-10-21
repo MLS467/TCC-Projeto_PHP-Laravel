@@ -41,11 +41,10 @@ RUN mkdir -p /var/log/apache2/evasive && chown -R www-data:www-data /var/log/apa
 
 COPY ./evasive.conf /etc/apache2/mods-available/evasive.conf
 
-# Instala extensões PHP necessárias (incluindo para email)
-RUN docker-php-ext-install pdo pdo_pgsql zip mbstring curl iconv
+# Instala extensões PHP necessárias
+RUN docker-php-ext-install pdo pdo_pgsql zip mbstring
 
-# Habilita extensão OpenSSL (geralmente já vem habilitada, mas garantindo)
-RUN docker-php-ext-enable openssl || true
+# OpenSSL, curl e iconv já vêm habilitados por padrão no PHP 8.2
 
 # Ativa o mod_rewrite no Apache (necessário para Laravel)
 RUN a2enmod rewrite
