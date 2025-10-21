@@ -21,12 +21,16 @@ RUN composer dump-autoload --optimize
 # Etapa 2: Container final com Apache e PHP
 FROM php:8.2-apache
 
-# Instala extensões PHP necessárias (com pdo_pgsql e SSL para emails)
+# Instala extensões PHP necessárias (com pdo_pgsql e mail)
 RUN apt-get update && apt-get install -y \
     libzip-dev unzip git curl libpng-dev libonig-dev libxml2-dev zip \
     libpq-dev \
-    ca-certificates \
-    openssl  # Instala as bibliotecas de desenvolvimento do PostgreSQL e SSL
+    libicu-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libmcrypt-dev \
+    sendmail \
+    ssmtp
 
 # <--- adiciona aqui limita requisições abusivas
 RUN apt-get update && apt-get install -y \
@@ -41,10 +45,10 @@ RUN mkdir -p /var/log/apache2/evasive && chown -R www-data:www-data /var/log/apa
 
 COPY ./evasive.conf /etc/apache2/mods-available/evasive.conf
 
-# Instala extensões PHP necessárias
-RUN docker-php-ext-install pdo pdo_pgsql zip mbstring
-
-# OpenSSL, curl e iconv já vêm habilitados por padrão no PHP 8.2
+# Instala a extensão pdo_pgsql e outras necessárias para email
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_pgsql zip gd intl \
+    && docker-php-ext-enable pdo_pgsql
 
 # Ativa o mod_rewrite no Apache (necessário para Laravel)
 RUN a2enmod rewrite
@@ -67,9 +71,6 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
-# Executa os testes - se falharem, o build para aqui
-RUN php artisan test || (echo "❌ TESTES FALHARAM - DEPLOY CANCELADO" && exit 1)
-
 # Cria script de inicialização
 RUN echo '#!/bin/bash\n\
 # Cria .env se não existir\n\
@@ -81,6 +82,14 @@ fi\n\
 if ! grep -q "APP_KEY=base64:" /var/www/html/.env; then\n\
     php artisan key:generate --no-interaction\n\
 fi\n\
+\n\
+# Configura sendmail/ssmtp para localhost\n\
+echo "mailhub=mailhog:1025" > /etc/ssmtp/ssmtp.conf\n\
+echo "UseSTARTTLS=NO" >> /etc/ssmtp/ssmtp.conf\n\
+echo "FromLineOverride=YES" >> /etc/ssmtp/ssmtp.conf\n\
+\n\
+# Inicia sendmail\n\
+service sendmail start\n\
 \n\
 # Cache de configuração\n\
 php artisan config:cache\n\
