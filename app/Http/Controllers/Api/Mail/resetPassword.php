@@ -4,36 +4,19 @@ namespace App\Http\Controllers\Api\Mail;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
-use Illuminate\View\View;
 
 class ResetPassword extends Controller
 {
-    /**
-     * Exibe o formulário de reset de senha
-     */
-    public function showResetForm(Request $request)
-    {
-        // Verifica se os parâmetros token e email estão presentes
-        if (!$request->has(['token', 'email'])) {
-            abort(404, 'Link de reset inválido');
-        }
-
-        return view('AtendeBemEmail.reset-password', [
-            'token' => $request->token,
-            'email' => $request->email
-        ]);
-    }
 
     /**
      * Processa o reset de senha
      */
-    public function resetPassword(Request $request): RedirectResponse|View
+    public function resetPassword(Request $request): JsonResponse
     {
-        // Validação dos dados
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
             'password' => 'required|string|min:8|confirmed',
@@ -41,11 +24,11 @@ class ResetPassword extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('token', $request->token)
-                ->with('email', $request->email);
+            return response()->json([
+                'success' => false,
+                'message' => 'Dados inválidos',
+                'errors' => $validator->errors()
+            ], 422);
         }
 
         try {
@@ -53,27 +36,35 @@ class ResetPassword extends Controller
             $user = User::where('email', $request->email)->first();
 
             if (!$user) {
-                return redirect()->back()
-                    ->withErrors(['email' => 'Usuário não encontrado'])
-                    ->withInput()
-                    ->with('token', $request->token)
-                    ->with('email', $request->email);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuário não encontrado'
+                ], 404);
             }
 
-            // TODO: Validar token de reset (implementar verificação de token)
+            // Verifica se o token é válido e não expirou
+            if ($user->reset_token !== $request->token || $user->reset_token_expires < now()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Token inválido ou expirado'
+                ], 400);
+            }
 
-            // Atualiza a senha
             $user->password = Hash::make($request->password);
+            $user->reset_token = null;
+            $user->reset_token_expires = null;
             $user->save();
 
-            // Redireciona para página de sucesso
-            return view('AtendeBemEmail.reset-success');
+            return response()->json([
+                'success' => true,
+                'message' => 'Senha alterada com sucesso'
+            ], 200);
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->withErrors(['error' => 'Erro interno do servidor: ' . $e->getMessage()])
-                ->withInput()
-                ->with('token', $request->token)
-                ->with('email', $request->email);
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno do servidor',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }
