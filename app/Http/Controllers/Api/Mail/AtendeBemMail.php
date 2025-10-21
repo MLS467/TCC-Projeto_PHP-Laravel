@@ -28,12 +28,20 @@ class AtendeBemMail extends Controller
             ], 404);
         }
 
+        // Gerar token e salvar no usuário
+        $token = Str::random(60);
+
+        // Salvar o token no usuário (adicione uma coluna reset_token na tabela users)
+        $user->reset_token = $token;
+        $user->reset_token_expires = now()->addHours(2); // Token expira em 2h
+        $user->save();
+
         // Preparar os dados para o email
         $dados = [
             'name' => $user->name,
             'email' => $user->email,
-            'reset_token' => Str::random(60), // Token para reset de senha
-            'reset_url' => url('/reset-password/' . Str::random(60))
+            'reset_token' => $token,
+            'reset_url' => url('/reset-password?token=' . $token . '&email=' . $user->email)
         ];
 
         try {
