@@ -28,15 +28,9 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
-    libmcrypt-dev \
-    sendmail \
-    ssmtp
-
-# <--- adiciona aqui limita requisições abusivas
-RUN apt-get update && apt-get install -y \
-    libzip-dev unzip git curl libpng-dev libonig-dev libxml2-dev zip \
-    libpq-dev \
-    libapache2-mod-evasive
+    libapache2-mod-evasive \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod evasive
 
@@ -82,14 +76,6 @@ fi\n\
 if ! grep -q "APP_KEY=base64:" /var/www/html/.env; then\n\
     php artisan key:generate --no-interaction\n\
 fi\n\
-\n\
-# Configura sendmail/ssmtp para localhost\n\
-echo "mailhub=mailhog:1025" > /etc/ssmtp/ssmtp.conf\n\
-echo "UseSTARTTLS=NO" >> /etc/ssmtp/ssmtp.conf\n\
-echo "FromLineOverride=YES" >> /etc/ssmtp/ssmtp.conf\n\
-\n\
-# Inicia sendmail\n\
-service sendmail start\n\
 \n\
 # Cache de configuração\n\
 php artisan config:cache\n\
