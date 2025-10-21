@@ -17,7 +17,7 @@ class ResetPassword extends Controller
      * Processa o reset de senha
      
      */
-    public function resetPassword(Request $request): JsonResponse
+    public function reset_password(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',

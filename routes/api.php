@@ -29,7 +29,7 @@ Route::middleware('guest')->group(function () {
     // email reset password
     Route::post('/reset-password-email', [AtendeBemMail::class, 'sendTokenEmail']);
 
-    Route::post('/reset-password-user', [ResetPassword::class, 'resetPassword']);
+    Route::post('/reset-password-user', [ResetPassword::class, 'reset_password']);
 
     Route::get('/health', function () {
         try {
