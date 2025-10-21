@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Dashboard\DashboardController;
 use App\Http\Controllers\Api\Mail\AtendeBemMail;
+use App\Http\Controllers\Api\Mail\ResetPassword;
 use App\Http\Controllers\Api\Record\MedicalRecordController;
 use App\Http\Controllers\Api\Nurse\Nurse;
 use App\Http\Controllers\Api\Patient\PatientCompletedController;
@@ -25,7 +26,10 @@ Route::middleware('guest')->group(function () {
     // Autenticação
     Route::post('/login', [LoginController::class, 'login']);
 
-    Route::post('/send-reset-email', [AtendeBemMail::class, 'sendEmail']);
+    // email reset password
+    Route::post('/reset-password-email', [AtendeBemMail::class, 'sendTokenEmail']);
+
+    Route::post('/reset-password-user', [ResetPassword::class, 'resetPassword']);
 
     Route::get('/health', function () {
         try {
@@ -47,8 +51,6 @@ Route::middleware('guest')->group(function () {
         }
     });
 });
-
-
 
 
 //Protected Routes (Authentication Required)
