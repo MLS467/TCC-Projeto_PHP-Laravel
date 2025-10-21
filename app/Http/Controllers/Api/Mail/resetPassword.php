@@ -13,6 +13,7 @@ class ResetPassword extends Controller
 {
 
     /**
+     * 
      * Processa o reset de senha
      */
     public function resetPassword(Request $request): JsonResponse
