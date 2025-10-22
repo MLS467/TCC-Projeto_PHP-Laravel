@@ -40,7 +40,7 @@ describe('Testing crud of Model Adm', function () {
             'cpf' => \Faker\Factory::create()->unique()->numerify('###########'),
             'sex' => \Faker\Factory::create()->randomElement(['masculino', 'feminino']),
             'birth' => '2000/01/01 01:00:00',
-            'photo' => \Faker\Factory::create()->imageUrl(),
+            'photo' => '',
             'place_of_birth' => \Faker\Factory::create()->city(),
             'city' => \Faker\Factory::create()->city(),
             'neighborhood' => \Faker\Factory::create()->word(),

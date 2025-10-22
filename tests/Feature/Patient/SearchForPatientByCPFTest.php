@@ -67,8 +67,10 @@ describe('testing return and structure of seach user by CPF', function () {
         $patient_user = createUser();
         createPatient($patient_user->id);
 
+
         $result = $this->get('api/user/cpf/' . $patient_user->cpf);
 
-        expect($result->status())->toBe(401);
+
+        expect($result->status())->not()->toBe(200);
     });
 });

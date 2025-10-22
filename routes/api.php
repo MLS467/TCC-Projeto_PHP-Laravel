@@ -50,36 +50,6 @@ Route::middleware('guest')->group(function () {
             ], 500);
         }
     });
-
-    // Rota temporária para limpar cache no Render (REMOVER DEPOIS!)
-    Route::get('/clear-cache-render', function () {
-        try {
-            // Limpar caches do Laravel
-            \Illuminate\Support\Facades\Artisan::call('cache:clear');
-            \Illuminate\Support\Facades\Artisan::call('config:clear');
-            \Illuminate\Support\Facades\Artisan::call('route:clear');
-            \Illuminate\Support\Facades\Artisan::call('view:clear');
-
-            // Executar composer dump-autoload
-            $composerOutput = '';
-            $composerResult = 0;
-            exec('composer dump-autoload --optimize 2>&1', $composerOutput, $composerResult);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Cache cleared and autoloader dumped successfully',
-                'composer_result' => $composerResult,
-                'composer_output' => implode("\n", $composerOutput),
-                'timestamp' => now()
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error clearing cache or dumping autoloader',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    });
 });
 
 
