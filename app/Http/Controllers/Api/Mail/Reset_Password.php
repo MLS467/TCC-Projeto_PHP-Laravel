@@ -9,11 +9,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 
-class ResetPassword extends Controller
+class Reset_Password extends Controller
 {
-
     /**
-     * ok
      * Processa o reset de senha
      
      */
