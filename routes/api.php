@@ -7,9 +7,10 @@ use App\Http\Controllers\Api\ConsultationData\ConsultationController;
 use App\Http\Controllers\Api\Doctor\DoctorController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
+use App\Http\Controllers\Api\Bed\JoinBetweenBedAndUser;
+use App\Http\Controllers\Api\Bed\SeparateBedFromPatient;
 use App\Http\Controllers\Api\Dashboard\DashboardController;
 use App\Http\Controllers\Api\Mail\AtendeBemMail;
-use App\Http\Controllers\Api\Mail\ResetPassword;
 use App\Http\Controllers\Api\Record\MedicalRecordController;
 use App\Http\Controllers\Api\Nurse\Nurse;
 use App\Http\Controllers\Api\Patient\PatientCompletedController;
@@ -79,6 +80,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Patient Routes
     Route::get('/patientCompleted', PatientCompletedController::class);
 
+    // join Bed with user
+    Route::post('/bed-with-patient', JoinBetweenBedAndUser::class);
+
+    Route::post('/bed-separate-patient', SeparateBedFromPatient::class);
 
     // Rotas padrões para crud
     Route::apiResources([
