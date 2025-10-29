@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\Doctor\DoctorController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Bed\JoinBetweenBedAndUser;
+use App\Http\Controllers\Api\Bed\JoinManualBedFromPatient;
+use App\Http\Controllers\Api\Bed\PatientForBed;
 use App\Http\Controllers\Api\Bed\SeparateBedFromPatient;
 use App\Http\Controllers\Api\Dashboard\DashboardController;
 use App\Http\Controllers\Api\Mail\AtendeBemMail;
@@ -23,11 +25,19 @@ use App\Http\Controllers\Api\User\UserPatientController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
+
+//-------------------------------------------
+// GUEST ROUTES (PUBLIC ACCESS)
+//-------------------------------------------
 Route::middleware('guest')->group(function () {
-    // Autenticação
+    //-----------------
+    // AUTENTICAÇÃO
+    //-----------------
     Route::post('/login', [LoginController::class, 'login']);
 
-    // email reset password
+    //-----------------------
+    // EMAIL RESET PASSWORD
+    //-----------------------
     Route::post('/reset-password-email', [AtendeBemMail::class, 'sendTokenEmail']);
 
     Route::post('/reset-password-user', [App\Http\Controllers\Api\Mail\Reset_Password::class, 'reset_password']);
@@ -54,13 +64,19 @@ Route::middleware('guest')->group(function () {
 });
 
 
-//Protected Routes (Authentication Required)
+//-------------------------------------------
+// PROTECTED ROUTES (AUTHENTICATION REQUIRED)
+//-------------------------------------------
 Route::middleware('auth:sanctum')->group(function () {
 
-    // dashboard data
+    //-----------------
+    // DASHBOARD DATA
+    //-----------------
     Route::get('/dashboard', DashboardController::class);
 
-    // User Routes
+    //-----------------
+    // USER ROUTES
+    //-----------------
     Route::get('/user/patient', UserPatientController::class);
 
     Route::get('/user/cpf/{cpf}', SearchForPatientByCPFController::class);
@@ -68,39 +84,60 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/flag', UserFlagController::class);
 
 
-    // Medical Records Routes
+    //--------------------------
+    // MEDICAL RECORDS ROUTES
+    //--------------------------
     Route::get('/medical-record/search/{cpf}', ShowRecordsByCPFController::class);
 
     Route::get('/medical-record/show/{id}', [MedicalRecordController::class, 'show']);
 
 
-    // Authentication Routes
+    //--------------------------
+    // AUTHENTICATION ROUTES
+    //--------------------------
     Route::get('/logout/{user}', LogoutController::class);
 
-    // Patient Routes
+    //--------------------------
+    // PATIENT ROUTES
+    //--------------------------
     Route::get('/patientCompleted', PatientCompletedController::class);
 
-    // join Bed with user
+    //--------------------------
+    // JOIN BED WITH USER
+    //--------------------------
     Route::post('/bed-with-patient', JoinBetweenBedAndUser::class);
 
     Route::post('/bed-separate-patient', SeparateBedFromPatient::class);
 
-    // Rotas padrões para crud
+    Route::post('/join-bed-manual-patient', JoinManualBedFromPatient::class);
+
+    Route::get('/patient-for-bed', PatientForBed::class);
+
+    //--------------------------
+    // ROTAS PADRÕES PARA CRUD
+    //--------------------------
     Route::apiResources([
         '/medical-record' => MedicalRecordController::class,
         '/user' => UserController::class,
         '/patient' => PatientController::class,
 
-        // Staff Routes
+        //--------------------------
+        // STAFF ROUTES
+        //--------------------------
         '/attendant' => Attendant::class,
         '/doctor' => DoctorController::class,
         '/nurse' => Nurse::class,
         '/adm' => AdmController::class,
 
-        // Consultation Routes
+        //--------------------------
+        // CONSULTATION ROUTES
+        //--------------------------
+        //--------------------------
         '/consultation' => ConsultationController::class,
 
-        // bed
+        //--------------------------
+        // BED
+        //--------------------------
         '/bed-management' => BedController::class
     ]);
 });

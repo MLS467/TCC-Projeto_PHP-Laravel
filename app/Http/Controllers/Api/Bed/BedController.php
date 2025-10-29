@@ -16,7 +16,9 @@ class BedController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $beds = Bed::with('user')->get();
+            $beds = Bed::with('user')
+                ->orderBy('number_bed')
+                ->get();
             return response()->json([
                 'success' => true,
                 'data' => $beds
