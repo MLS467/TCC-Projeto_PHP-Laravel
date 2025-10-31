@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendant;
-use App\Models\Consultation;
 use App\Models\Doctor;
 use App\Models\MedicalRecord;
 use App\Models\Nurse;

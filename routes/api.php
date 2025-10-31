@@ -14,7 +14,7 @@ use App\Http\Controllers\Api\Bed\SeparateBedFromPatient;
 use App\Http\Controllers\Api\Dashboard\DashboardController;
 use App\Http\Controllers\Api\Mail\AtendeBemMail;
 use App\Http\Controllers\Api\Record\MedicalRecordController;
-use App\Http\Controllers\Api\Nurse\Nurse;
+use App\Http\Controllers\Api\Nurse\NurseController;
 use App\Http\Controllers\Api\Patient\PatientCompletedController;
 use App\Http\Controllers\Api\Patient\PatientController;
 use App\Http\Controllers\Api\Record\ShowRecordsByCPFController;
@@ -126,7 +126,7 @@ Route::middleware('auth:sanctum')->group(function () {
         //--------------------------
         '/attendant' => Attendant::class,
         '/doctor' => DoctorController::class,
-        '/nurse' => Nurse::class,
+        '/nurse' => NurseController::class,
         '/adm' => AdmController::class,
 
         //--------------------------

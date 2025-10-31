@@ -7,9 +7,9 @@ use App\Http\Requests\StoreNurseRequest;
 use App\Http\Requests\UpdateNurseRequest;
 use App\Models\Nurse as ModelsNurse;
 
-class Nurse extends Crud
+class NurseController extends Crud
 {
-    protected $model = 'nurse';
+    protected $model = 'Nurse';
 
     /**
      * Display a listing of the resource.
