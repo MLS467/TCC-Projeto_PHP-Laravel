@@ -19,12 +19,18 @@ class ConsultationController extends Controller
      */
     public function index()
     {
-        $newConsutation = new ConsultationResourceCollection(Consultation::all());
+        $newConsutation = Consultation::all();
+        if (!$newConsutation->isEmpty()) {
+            return response()->json([
+                'status' => true,
+                'data' => $newConsutation
+            ], 200);
+        }
 
-        if (!$newConsutation->isEmpty())
-            return $newConsutation;
-
-        throw new ConsultationException('Erro em solicitar dados de consulta.', 500);
+        return response()->json([
+            'status' => false,
+            'message' => 'Erro em solicitar dados de consulta.'
+        ], 500);
     }
 
     /**

@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 // GUEST ROUTES (PUBLIC ACCESS)
 //-------------------------------------------
 Route::middleware('guest')->group(function () {
+
     //-----------------
     // AUTENTICAÇÃO
     //-----------------
@@ -83,14 +84,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user/flag', UserFlagController::class);
 
-
     //--------------------------
     // MEDICAL RECORDS ROUTES
     //--------------------------
     Route::get('/medical-record/search/{cpf}', ShowRecordsByCPFController::class);
 
     Route::get('/medical-record/show/{id}', [MedicalRecordController::class, 'show']);
-
 
     //--------------------------
     // AUTHENTICATION ROUTES
