@@ -41,7 +41,7 @@ describe('Testing crud of Model Attendant', function () {
             "cpf" => "12345678901",
             "sex" => "feminino",
             "birth" => "2000-01-01 01:00:00",
-            "photo" => "https://randomuser.me/api/portraits/women/65.jpg",
+            // "photo" => "www.teste.com/photo.jpg",
             "place_of_birth" => "Rio de Janeiro",
             "city" => "Niterói",
             "neighborhood" => "Icaraí",

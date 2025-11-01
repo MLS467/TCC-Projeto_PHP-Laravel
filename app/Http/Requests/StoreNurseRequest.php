@@ -32,6 +32,7 @@ class StoreNurseRequest extends FormRequest
             'city' => 'required|string|max:255',
             'coren' => 'required|digits_between:5,15',
             'cpf' => 'required|digits:11',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
             'email' => 'required|email',
             'id_administrator_fk' => 'required|int',
             'name' => 'required|string|max:255',
@@ -49,6 +50,9 @@ class StoreNurseRequest extends FormRequest
     public function messages()
     {
         return [
+            'photo.image' => 'A foto deve ser uma imagem.',
+            'photo.mimes' => 'A foto deve ser um arquivo do tipo: jpg, jpeg, png.',
+            'photo.max' => 'A foto não pode ter mais de 4096 KB.',
             'active.in' => 'O campo ativo deve ser on',
             'age.integer' => 'O campo idade deve ser um número inteiro',
             'age.min' => 'O campo idade deve ser no mínimo 18',

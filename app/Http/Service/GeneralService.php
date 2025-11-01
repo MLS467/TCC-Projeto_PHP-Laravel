@@ -2,37 +2,48 @@
 
 namespace App\Http\Service;
 
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class GeneralService
 {
-    public static function uploadFoto(Request $request)
+    public static function uploadFoto(Request $request): array
     {
-        $request->validate([
-            'photo' => 'required|image|mimes:jpg,jpeg,png|max:4096',
-        ]);
-
         $file = $request->file('photo');
 
         try {
-            $path = Storage::disk('cloudinary')->put('avatars', $file);
+            // Criar instância do ImageManager
+            $manager = new ImageManager(new Driver());
 
-            $url = $path;
+            // Redimensionar imagem antes do upload
+            $image = $manager->read($file);
+            $image->resize(300, 300);
 
-            // Se quiser salvar no banco, exemplo:
-            // Paciente::where('id', $id)->update(['foto_url' => $url]);
+            // Converter para formato temporário com extensão
+            $tempPath = tempnam(sys_get_temp_dir(), 'resized_image') . '.jpg';
+            $image->save($tempPath, 70);
 
-            return response()->json([
-                'message' => 'Upload realizado com sucesso',
+            // Upload para Cloudinary com nome único
+            $fileName = 'avatar_' . uniqid() . '_' . time() . '.jpg';
+            Storage::disk('cloudinary')->putFileAs('avatars', $tempPath, $fileName);
+
+            // Limpar arquivo temporário
+            unlink($tempPath);
+
+            // O Storage::disk('cloudinary')->putFileAs retorna true/false, então gere a URL manualmente
+            $url = 'https://res.cloudinary.com/dyyiewmgy/image/upload/avatars/' . $fileName;
+
+            return [
+                'status' => true,
                 'url' => $url
-            ]);
+            ];
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Erro no upload',
+            return [
+                'status' => false,
                 'message' => $e->getMessage()
-            ], 500);
+            ];
         }
     }
 }

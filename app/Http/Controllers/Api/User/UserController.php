@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\User;
 use App\Exceptions\UserException;
 use App\Http\Controllers\Api\Abstract\Crud;
 use App\Http\Requests\UserStoredRequest;
+use App\Http\Service\GeneralService;
 use App\Http\traits\UploadImagemTrait;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -37,12 +38,7 @@ class UserController extends Crud
     public function store(UserStoredRequest $request)
     {
         try {
-
-            $photo_name = $this->uploadImagem($request);
-
             $data_validated = $request->validated();
-
-            $data_validated['photo'] = $photo_name;
 
             $user = User::create($data_validated);
 

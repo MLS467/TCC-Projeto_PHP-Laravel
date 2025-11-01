@@ -22,8 +22,6 @@ use App\Http\Controllers\Api\Patient\SearchForPatientByCPFController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\User\UserFlagController;
 use App\Http\Controllers\Api\User\UserPatientController;
-use App\Http\Service\GeneralService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -32,16 +30,6 @@ use Illuminate\Support\Facades\Route;
 // GUEST ROUTES (PUBLIC ACCESS)
 //-------------------------------------------
 Route::middleware('guest')->group(function () {
-
-    //-----------------------------
-    // TESTE PARA UPLOAD DE PHOTO
-    //-----------------------------
-
-    Route::post('/test-upload-photo', function (Request $request) {
-        return GeneralService::uploadFoto($request);
-    });
-
-
 
     //-----------------
     // AUTENTICAÇÃO

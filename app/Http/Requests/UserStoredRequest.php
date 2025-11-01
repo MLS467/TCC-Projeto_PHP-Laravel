@@ -31,7 +31,7 @@ class UserStoredRequest extends FormRequest
             'cpf' => 'required|regex:/^\d{11}$/',
             'sex' => 'required|in:masculino,feminino,outro',
             'birth' => 'required|date',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photo' => 'required|image|mimes:jpg,jpeg,png|max:4096',
             'place_of_birth' => 'nullable|string|max:255',
             'city' => 'required|string|max:255',
             'neighborhood' => 'nullable|string|max:255',

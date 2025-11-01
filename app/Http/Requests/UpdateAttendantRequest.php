@@ -30,6 +30,7 @@ class UpdateAttendantRequest extends FormRequest
             'block' => 'nullable|string|max:10',
             'city' => 'nullable|string|max:255',
             'cpf' => 'nullable|digits:11',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
             'email' => 'nullable|email',
             'name' => 'nullable|string|max:255',
             'neighborhood' => 'nullable|string|max:255',
@@ -45,6 +46,9 @@ class UpdateAttendantRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'photo.image' => 'A foto deve ser uma imagem.',
+            'photo.mimes' => 'A foto deve ser um arquivo do tipo: jpg, jpeg, png.',
+            'photo.max' => 'A foto não pode ter mais de 4096 KB.',
             'active.integer' => 'O campo active deve ser um número inteiro.',
             'apartment.string' => 'O campo apartment deve ser uma string.',
             'apartment.max' => 'O campo apartment deve ter no máximo 10 caracteres.',

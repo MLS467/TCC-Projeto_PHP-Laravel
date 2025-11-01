@@ -30,7 +30,7 @@ class AdmUpdateRequest extends FormRequest
             'phone' => 'nullable|string|max:20',
             'sex' => 'nullable|in:male,female,other',
             'birth' => 'nullable|date',
-            'photo' => 'nullable|url',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
             'place_of_birth' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
             'neighborhood' => 'nullable|string|max:255',
@@ -73,6 +73,9 @@ class AdmUpdateRequest extends FormRequest
             'apartment.max' => 'O apartamento não pode ter mais de 10 caracteres.',
             'role.string' => 'O cargo deve ser uma string.',
             'role.max' => 'O cargo não pode ter mais de 50 caracteres.',
+            'photo.image' => 'A foto deve ser uma imagem.',
+            'photo.mimes' => 'A foto deve ser um arquivo do tipo: jpg, jpeg, png.',
+            'photo.max' => 'A foto não pode ter mais de 4096 KB.',
         ];
     }
 

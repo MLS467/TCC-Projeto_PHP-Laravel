@@ -28,6 +28,7 @@ class UpdateDoctorRequest extends FormRequest
             'age' => 'nullable|integer|min:18|max:100',
             'email' => 'nullable|email|max:150',
             'phone' => 'nullable|regex:/^\d{10,11}$/',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
             'cpf' => 'nullable|string',
             'sex' => 'nullable|string|in:masculino,feminino',
             'birth' => 'nullable|date|before:today',
@@ -67,6 +68,9 @@ class UpdateDoctorRequest extends FormRequest
             'apartment.max' => 'O campo "apartamento" deve ter no máximo 10 caracteres.',
             'crm.regex' => 'O campo "CRM" deve começar com "CRM" seguido de números.',
             'specialty.max' => 'O campo "especialidade" deve ter no máximo 100 caracteres.',
+            'photo.image' => 'A foto deve ser uma imagem.',
+            'photo.mimes' => 'A foto deve ser um arquivo do tipo: jpg, jpeg, png.',
+            'photo.max' => 'A foto não pode ter mais de 4096 KB.',
         ];
     }
 

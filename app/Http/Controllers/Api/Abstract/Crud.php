@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Abstract;
 
 use App\Http\Controllers\Controller;
+use App\Http\Service\GeneralService;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -47,6 +48,18 @@ abstract class Crud extends Controller
 
                 $dataValidated = $request->validated();
 
+
+                $result_photo = GeneralService::uploadFoto($request);
+
+                $photo_name = null;
+
+                if ($result_photo['status']) {
+                    $photo_name = $result_photo['url'];
+                }
+
+
+                // Inserir a URL da foto nos dados validados para que seja persistida no usuário
+                $dataValidated['photo'] = $photo_name;
 
                 $user = User::create($dataValidated);
 
