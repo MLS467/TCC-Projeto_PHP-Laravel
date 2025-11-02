@@ -51,7 +51,7 @@ abstract class Crud extends Controller
 
                 $result_photo = GeneralService::uploadFoto($request);
 
-                $photo_name = null;
+                $photo_name = "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762111545/not_found_ml4qgi.jpg";
 
                 if ($result_photo['status']) {
                     $photo_name = $result_photo['url'];
@@ -102,9 +102,22 @@ abstract class Crud extends Controller
         try {
             $user_id = $model['user_id'];
 
-            if (User::find($user_id)->update($request->validated())) {
+            $dataValidated = $request->validated();
 
-                if ($model->update($request->validated())) {
+
+            $result_photo = GeneralService::uploadFoto($request);
+
+            $photo_name = "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762111545/not_found_ml4qgi.jpg";
+
+            if ($result_photo['status']) {
+                $photo_name = $result_photo['url'];
+            }
+
+            $dataValidated['photo'] = $photo_name;
+
+            if (User::find($user_id)->update($dataValidated)) {
+
+                if ($model->update($dataValidated)) {
                     return response()->json(['status' => true, 'message' => 'updated successfully', 'data' => $model->load('user')], 200);
                 } else
                     throw new \Exception("Error updating Adm {$this->$model->id}");

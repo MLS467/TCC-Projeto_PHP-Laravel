@@ -45,7 +45,7 @@ describe("check flow of upload photo is correct and photo url is stored in datab
 
         expect($user_data[0]['name'])->toBe('Lucas Almeida');
 
-        expect($user_data[0]['photo'])->toBeNull();
+        expect($user_data[0]['photo'])->toContain("not_found");
     });
 
     it('check if upload of photo is correct with value wrong', function () {
