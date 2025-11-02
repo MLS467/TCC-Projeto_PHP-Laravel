@@ -48,15 +48,14 @@ abstract class Crud extends Controller
 
                 $dataValidated = $request->validated();
 
-
                 $result_photo = GeneralService::uploadFoto($request);
 
-                $photo_name = "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762111545/not_found_ml4qgi.jpg";
+                $photo_name = $this->addAvatarForEmployee($request);
+
 
                 if ($result_photo['status']) {
                     $photo_name = $result_photo['url'];
                 }
-
 
                 // Inserir a URL da foto nos dados validados para que seja persistida no usuário
                 $dataValidated['photo'] = $photo_name;
@@ -104,16 +103,11 @@ abstract class Crud extends Controller
 
             $dataValidated = $request->validated();
 
-
             $result_photo = GeneralService::uploadFoto($request);
 
-            $photo_name = "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762111545/not_found_ml4qgi.jpg";
-
             if ($result_photo['status']) {
-                $photo_name = $result_photo['url'];
+                $dataValidated['photo'] = $result_photo['url'];
             }
-
-            $dataValidated['photo'] = $photo_name;
 
             if (User::find($user_id)->update($dataValidated)) {
 
@@ -156,6 +150,39 @@ abstract class Crud extends Controller
             return response()->json(['status' => true, 'message' => 'Model deleted successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => 'Error deleting model', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+
+    private function addAvatarForEmployee($request)
+    {
+        switch (strtolower($request->role)) {
+            case 'nurse':
+                if ($request->sex === 'masculino') {
+                    return  "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762124908/b7b0eb19-3c98-4ffe-9e33-ad4c92d3bc4e.png";
+                }
+                return  "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762124825/37f366d7-01f6-4f0c-a589-98e0850422ff.png";
+
+            case 'attendant':
+                if ($request->sex === 'masculino') {
+                    return  "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762125094/098ff745-7d12-48bc-9bb9-8d24cd9a84ee.png";
+                }
+                return  "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762125081/e2ddccb0-b14f-4705-a049-c21e3aea0ee1.png";
+
+            case 'doctor':
+                if ($request->sex === 'masculino') {
+                    return  "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762125162/6788a027-7ef3-4168-90ff-24ce18c07452.png";
+                }
+                return  "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762125191/75d985ac-0eda-4308-be3e-6d3cbfde7f6b.png";
+
+            case 'admin':
+                if ($request->sex === 'masculino') {
+                    return  "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762125387/f162d97e-c7aa-4c84-86aa-49711b3a5233.png";
+                }
+                return  "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762125422/dc929a03-bcea-43a7-b9e5-dee152418cdc.png";
+
+            default:
+                return  "https://res.cloudinary.com/dyyiewmgy/image/upload/v1762111545/not_found_ml4qgi.jpg";
         }
     }
 }
