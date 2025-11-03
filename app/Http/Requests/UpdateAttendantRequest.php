@@ -84,6 +84,8 @@ class UpdateAttendantRequest extends FormRequest
             'place_of_birth.string' => 'O campo place_of_birth deve ser uma string.',
             'place_of_birth.max' => 'O campo place_of_birth deve ter no máximo 255 caracteres.',
             'role.required' => 'O campo role é obrigatório.',
+            'sex.in' => 'O campo sexo deve ser masculino ou feminino.',
+            'active.integer' => 'O campo active deve ser um número inteiro.',
         ];
     }
 
@@ -91,7 +93,7 @@ class UpdateAttendantRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'active' => $this->active === "1" ? 1 : 0,
+            'active' => $this->active === "1" || 1 ? 1 : 0,
             'age' => (int) floor((strtotime(now()) - strtotime($this->birth)) / (60 * 60 * 24 * 365.25)),
 
             // id_administrator_fk recebe o id do usuário que está autenticado e manda o id do administrador
