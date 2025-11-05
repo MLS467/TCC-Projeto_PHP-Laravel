@@ -42,10 +42,9 @@ describe("check flow of upload photo is correct and photo url is stored in datab
 
         $user_data = User::where('id', 3)->get()->toArray();
 
-
         expect($user_data[0]['name'])->toBe('Lucas Almeida');
 
-        expect($user_data[0]['photo'])->toContain("not_found");
+        expect($user_data[0]['photo'])->toContain("https://res.cloudinary.com/dyyiewmgy/image/upload/");
     });
 
     it('check if upload of photo is correct with value wrong', function () {
@@ -97,7 +96,7 @@ function LoginAsAttendantAndGetToken($test, $file)
         'password' => bcrypt('password'), // Senha padrão
         'phone' => '53984072826',
         'cpf' => '12345678901',
-        'sex' => 'masculino',
+        'sex' => Faker\Factory::create()->randomElement(['masculino', 'feminino']),
         'birth' => '1998-07-14',
         'photo' => $file, // UploadedFile::fake()->image('avatar.jpg')
         'place_of_birth' => 'Pelotas',

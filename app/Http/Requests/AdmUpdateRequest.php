@@ -28,7 +28,7 @@ class AdmUpdateRequest extends FormRequest
             'email_verified_at' => 'nullable|date',
             'password' => 'nullable|string|min:8',
             'phone' => 'nullable|string|max:20',
-            'sex' => 'nullable|in:male,female,other',
+            'sex' => 'nullable|in:masculino,feminino',
             'birth' => 'nullable|date',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
             'place_of_birth' => 'nullable|string|max:255',
