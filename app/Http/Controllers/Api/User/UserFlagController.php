@@ -14,7 +14,9 @@ class UserFlagController extends Controller
             return User::where([
                 ['flag', '=', '0'],
                 ['role', '=', 'patient']
-            ])->get();
+            ])
+                ->orderBy('created_at', 'asc')
+                ->get();
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
