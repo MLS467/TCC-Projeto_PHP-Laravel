@@ -9,6 +9,16 @@ use Illuminate\Http\Request;
 
 class MedicalRecordController extends Controller
 {
+
+    public function index()
+    {
+        $records = MedicalRecord::all();
+
+        return response()->json([
+            'data' => $records
+        ], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

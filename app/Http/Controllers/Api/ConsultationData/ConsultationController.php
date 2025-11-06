@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\ConsultationData;
 use App\Exceptions\ConsultationException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ConsultationResource;
-use App\Http\Resources\ConsultationResourceCollection;
 use App\Models\Consultation;
 use App\Http\Requests\UpdateConsultationRequest;
 use App\Http\Requests\StoreConsultationRequest;

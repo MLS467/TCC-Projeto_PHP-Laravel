@@ -18,7 +18,7 @@ class LoginController extends Controller
 
             $user = Auth::user();
 
-            $token = $request->user()->createToken('Token-Valido')->plainTextToken;
+            $token = $user->createToken('Token-Valido', ['*'], now()->addHours(4))->plainTextToken;
 
             return response()->json(['user' => $user, 'token' => $token], 200);
         } else
