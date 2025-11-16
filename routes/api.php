@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\Record\MedicalRecordController;
 use App\Http\Controllers\Api\Nurse\NurseController;
 use App\Http\Controllers\Api\Patient\PatientCompletedController;
 use App\Http\Controllers\Api\Patient\PatientController;
+use App\Http\Controllers\Api\Patient\SeachPatientByCns;
 use App\Http\Controllers\Api\Record\ShowRecordsByCPFController;
 use App\Http\Controllers\Api\Patient\SearchForPatientByCPFController;
 use App\Http\Controllers\Api\User\UserController;
@@ -30,7 +31,6 @@ use Illuminate\Support\Facades\Route;
 // GUEST ROUTES (PUBLIC ACCESS)
 //-------------------------------------------
 Route::middleware('guest')->group(function () {
-
     //-----------------
     // AUTENTICAÇÃO
     //-----------------
@@ -69,6 +69,12 @@ Route::middleware('guest')->group(function () {
 // PROTECTED ROUTES (AUTHENTICATION REQUIRED)
 //-------------------------------------------
 Route::middleware('auth:sanctum')->group(function () {
+
+    //-----------------------------------------------------------
+    // TESTE DE RETORNO DOS DADOS DE PACIENTE DO CARTÃO DO SUS
+    //-----------------------------------------------------------
+    Route::post('sus/pacient', SeachPatientByCns::class);
+
 
     //-----------------
     // DASHBOARD DATA
