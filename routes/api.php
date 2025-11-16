@@ -12,18 +12,17 @@ use App\Http\Controllers\Api\Bed\JoinManualBedFromPatient;
 use App\Http\Controllers\Api\Bed\PatientForBed;
 use App\Http\Controllers\Api\Bed\SeparateBedFromPatient;
 use App\Http\Controllers\Api\Dashboard\DashboardController;
-use App\Http\Controllers\Api\Health\UpTimeRobot;
 use App\Http\Controllers\Api\Mail\AtendeBemMail;
 use App\Http\Controllers\Api\Record\MedicalRecordController;
 use App\Http\Controllers\Api\Nurse\NurseController;
 use App\Http\Controllers\Api\Patient\PatientCompletedController;
 use App\Http\Controllers\Api\Patient\PatientController;
-use App\Http\Controllers\Api\Patient\SeachPatientByCns;
 use App\Http\Controllers\Api\Record\ShowRecordsByCPFController;
 use App\Http\Controllers\Api\Patient\SearchForPatientByCPFController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\User\UserFlagController;
 use App\Http\Controllers\Api\User\UserPatientController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 
@@ -31,8 +30,9 @@ use Illuminate\Support\Facades\Route;
 // GUEST ROUTES (PUBLIC ACCESS)
 //-------------------------------------------
 Route::middleware('guest')->group(function () {
+
     //-----------------
-    // USER AUTENTICATION
+    // AUTENTICAÇÃO
     //-----------------
     Route::post('/login', [LoginController::class, 'login']);
 
@@ -43,10 +43,25 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/reset-password-user', [App\Http\Controllers\Api\Mail\Reset_Password::class, 'reset_password']);
 
-    //--------------------------
-    // CHECKING HEALTH OF API
-    //--------------------------
-    Route::get('/health', UpTimeRobot::class);
+    Route::get('/health', function () {
+        try {
+            DB::connection()->getPdo();
+            return response()->json([
+                'alive' => true,
+                'db'    => 'ok'
+            ], 200);
+        } catch (Exception $e) {
+            $message = env('APP_ENV') === 'local'
+                ? $e->getMessage()
+                : 'database connection failed';
+
+            return response()->json([
+                'alive'  => false,
+                'db'     => 'fail',
+                'error'  => $message
+            ], 500);
+        }
+    });
 });
 
 
@@ -54,11 +69,6 @@ Route::middleware('guest')->group(function () {
 // PROTECTED ROUTES (AUTHENTICATION REQUIRED)
 //-------------------------------------------
 Route::middleware('auth:sanctum')->group(function () {
-
-    //-----------------
-    // PATIENT BY CNS
-    //-----------------
-    Route::post('sus/pacient', SeachPatientByCns::class);
 
     //-----------------
     // DASHBOARD DATA
