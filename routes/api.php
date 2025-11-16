@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Bed\JoinManualBedFromPatient;
 use App\Http\Controllers\Api\Bed\PatientForBed;
 use App\Http\Controllers\Api\Bed\SeparateBedFromPatient;
 use App\Http\Controllers\Api\Dashboard\DashboardController;
+use App\Http\Controllers\Api\Health\UpTimeRobot;
 use App\Http\Controllers\Api\Mail\AtendeBemMail;
 use App\Http\Controllers\Api\Record\MedicalRecordController;
 use App\Http\Controllers\Api\Nurse\NurseController;
@@ -23,7 +24,6 @@ use App\Http\Controllers\Api\Patient\SearchForPatientByCPFController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\User\UserFlagController;
 use App\Http\Controllers\Api\User\UserPatientController;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 
@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Route;
 //-------------------------------------------
 Route::middleware('guest')->group(function () {
     //-----------------
-    // AUTENTICAÇÃO
+    // USER AUTENTICATION
     //-----------------
     Route::post('/login', [LoginController::class, 'login']);
 
@@ -43,25 +43,10 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/reset-password-user', [App\Http\Controllers\Api\Mail\Reset_Password::class, 'reset_password']);
 
-    Route::get('/health', function () {
-        try {
-            DB::connection()->getPdo();
-            return response()->json([
-                'alive' => true,
-                'db'    => 'ok'
-            ], 200);
-        } catch (Exception $e) {
-            $message = env('APP_ENV') === 'local'
-                ? $e->getMessage()
-                : 'database connection failed';
-
-            return response()->json([
-                'alive'  => false,
-                'db'     => 'fail',
-                'error'  => $message
-            ], 500);
-        }
-    });
+    //--------------------------
+    // CHECKING HEALTH OF API
+    //--------------------------
+    Route::get('/health', UpTimeRobot::class);
 });
 
 
@@ -70,11 +55,10 @@ Route::middleware('guest')->group(function () {
 //-------------------------------------------
 Route::middleware('auth:sanctum')->group(function () {
 
-    //-----------------------------------------------------------
-    // TESTE DE RETORNO DOS DADOS DE PACIENTE DO CARTÃO DO SUS
-    //-----------------------------------------------------------
+    //-----------------
+    // PATIENT BY CNS
+    //-----------------
     Route::post('sus/pacient', SeachPatientByCns::class);
-
 
     //-----------------
     // DASHBOARD DATA
