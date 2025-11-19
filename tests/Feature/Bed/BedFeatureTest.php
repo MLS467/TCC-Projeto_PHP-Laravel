@@ -51,7 +51,7 @@ describe('testing bed functions', function () {
 
         $result_formatted = json_decode($result->content(), true);
 
-        expect($result_formatted['message'])->toBe("Patient created and user updated successfully");
+        expect($result_formatted['message'])->toBe("Paciente criado com sucesso");
 
         // testa se o usuario está relacionado com o leito
         expect(
@@ -106,7 +106,7 @@ describe('testing bed functions', function () {
 
         $result_formatted = json_decode($result->content(), true);
 
-        expect($result_formatted['message'])->toBe("Patient created and user updated successfully");
+        expect($result_formatted['message'])->toBe("Paciente criado com sucesso");
 
         // testa se o paciente NÃO foi atribuído automaticamente a um leito
         expect(
