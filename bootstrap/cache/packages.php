@@ -34,6 +34,13 @@
       0 => 'Laravel\\Tinker\\TinkerServiceProvider',
     ),
   ),
+  'lucascudo/laravel-pt-br-localization' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Lucascudo\\LaravelPtBrLocalization\\LaravelPtBrLocalizationServiceProvider',
+    ),
+  ),
   'nesbot/carbon' => 
   array (
     'providers' => 
