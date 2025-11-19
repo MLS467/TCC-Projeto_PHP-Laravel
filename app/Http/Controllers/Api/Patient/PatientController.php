@@ -69,7 +69,7 @@ class PatientController extends Crud
 
             return response()->json([
                 'status' => true,
-                'message' => 'Patient created and user updated successfully',
+                'message' => 'Paciente criado com sucesso',
                 'data' => $patient
             ], 201);
         });
