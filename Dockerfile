@@ -10,9 +10,9 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala extensões PHP
+# Instala extensões PHP (pdo, mbstring, xml, tokenizer, ctype já vêm instalados no php:8.2-cli)
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_pgsql zip gd intl mbstring xml tokenizer ctype
+    && docker-php-ext-install pdo_pgsql zip gd intl
 
 # Instala Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -53,9 +53,9 @@ RUN mkdir -p /var/log/apache2/evasive && chown -R www-data:www-data /var/log/apa
 
 COPY ./evasive.conf /etc/apache2/mods-available/evasive.conf
 
-# Instala extensões PHP necessárias para Laravel
+# Instala extensões PHP necessárias para Laravel (pdo, mbstring, xml, tokenizer, ctype já vêm pré-instalados)
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_pgsql zip gd intl mbstring xml tokenizer ctype \
+    && docker-php-ext-install pdo_pgsql zip gd intl \
     && docker-php-ext-enable pdo_pgsql
 
 # Ativa o mod_rewrite no Apache (necessário para Laravel)
