@@ -1,22 +1,36 @@
 # Etapa 1: Construção com Composer
-FROM composer:2 AS build
+FROM php:8.2-cli AS build
 
 WORKDIR /app
+
+# Instala extensões PHP necessárias no build stage
+RUN apt-get update && apt-get install -y \
+    libzip-dev unzip git curl libpng-dev libonig-dev libxml2-dev \
+    libpq-dev libicu-dev libfreetype6-dev libjpeg62-turbo-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instala extensões PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_pgsql zip gd intl mbstring xml tokenizer ctype
+
+# Instala Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Copia composer.json e composer.lock primeiro para aproveitar cache do Docker
 COPY composer.json composer.lock ./
 
-# Instala dependências do Composer sem scripts
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+# Cria .env temporário antes da instalação para evitar erros
+RUN echo "APP_KEY=base64:dummy" > .env
+
+# Instala dependências do Composer COM scripts (necessário para Laravel)
+RUN composer install --no-dev --optimize-autoloader
 
 # Copia o resto do projeto
 COPY . .
 
-# Cria um .env temporário para evitar erros durante o build
-RUN cp .env.example .env || echo "APP_KEY=" > .env
-
-# Executa scripts do composer após ter todos os arquivos
-RUN composer dump-autoload --optimize
+# Remove .env temporário
+RUN rm -f .env
 
 # Etapa 2: Container final com Apache e PHP
 FROM php:8.2-apache
@@ -39,9 +53,9 @@ RUN mkdir -p /var/log/apache2/evasive && chown -R www-data:www-data /var/log/apa
 
 COPY ./evasive.conf /etc/apache2/mods-available/evasive.conf
 
-# Instala a extensão pdo_pgsql e outras necessárias para email
+# Instala extensões PHP necessárias para Laravel
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_pgsql zip gd intl \
+    && docker-php-ext-install pdo pdo_pgsql zip gd intl mbstring xml tokenizer ctype \
     && docker-php-ext-enable pdo_pgsql
 
 # Ativa o mod_rewrite no Apache (necessário para Laravel)
@@ -65,29 +79,30 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
-# Cria script de inicialização
+# Cria script de inicialização otimizado
 RUN echo '#!/bin/bash\n\
 # Cria .env se não existir\n\
 if [ ! -f /var/www/html/.env ]; then\n\
     cp /var/www/html/.env.example /var/www/html/.env\n\
+    # Configura para produção\n\
+    sed -i "s/APP_ENV=local/APP_ENV=production/" /var/www/html/.env\n\
+    sed -i "s/APP_DEBUG=true/APP_DEBUG=false/" /var/www/html/.env\n\
 fi\n\
 \n\
 # Gera chave da aplicação se não existir\n\
 if ! grep -q "APP_KEY=base64:" /var/www/html/.env; then\n\
-    php artisan key:generate --no-interaction\n\
+    php artisan key:generate --no-interaction --force\n\
 fi\n\
 \n\
-# Limpa cache e otimiza autoloader\n\
-composer dump-autoload --optimize\n\
-php artisan cache:clear\n\
-php artisan config:clear\n\
-php artisan route:clear\n\
-php artisan view:clear\n\
+# Otimizações para produção (só executa uma vez)\n\
+if [ ! -f /var/www/html/bootstrap/cache/config.php ]; then\n\
+    php artisan config:cache\n\
+    php artisan route:cache\n\
+    php artisan view:cache\n\
+fi\n\
 \n\
-# Cache de configuração para produção\n\
-php artisan config:cache\n\
-php artisan route:cache\n\
-php artisan view:cache\n\
+# Ajusta permissões finais\n\
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache\n\
 \n\
 # Inicia Apache\n\
 apache2-foreground' > /usr/local/bin/start.sh \
