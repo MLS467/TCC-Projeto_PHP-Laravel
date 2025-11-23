@@ -24,7 +24,11 @@ class PatientController extends Crud
      */
     public function index()
     {
-        return new PatientResourceCollection(Patient::with('user')->get());
+        return new PatientResourceCollection(
+            Patient::with('user')
+                ->orderByDesc('created_at')
+                ->get()
+        );
     }
 
     /**
@@ -32,48 +36,58 @@ class PatientController extends Crud
      */
     public function store(StorePatientRequest $request)
     {
-        return DB::transaction(function () use ($request) {
-            $patientData = $request->validated();
-            $patientData['flag_consultation'] = 0;
+        try {
 
-            $patient = Patient::create($patientData);
+            return DB::transaction(function () use ($request) {
+                $patientData = $request->validated();
+                $patientData['flag_consultation'] = 0;
 
-            if (!$patient)
-                throw new PatientException('Erro ao criar paciente', 404);
+                $patient = Patient::create($patientData);
 
-            $user = User::find($patientData['user_id']);
+                if (!$patient)
+                    throw new PatientException('Erro ao criar paciente', 404);
 
-            if (!$user)
-                throw new PatientException('Usuário não encontrado', 404);
+                $user = User::find($patientData['user_id']);
 
-            $user->update(['flag' => 1]);
+                if (!$user)
+                    throw new PatientException('Usuário não encontrado', 404);
 
-            if ($patientData['patient_condition'] === 'critical') {
-                $bed = Bed::where('user_id', '=', null)
-                    ->where('status_bed', '=', false)
-                    ->first();
+                $user->update(['flag' => 1]);
 
-                if (!$bed) {
-                    return response()->json([
-                        'status' => true,
-                        'message' => 'Não há mais leitos, espere a liberação para proseguir',
-                        'data' => $patient
-                    ], 200);
+                if ($patientData['patient_condition'] === 'critical') {
+                    $bed = Bed::where('user_id', '=', null)
+                        ->where('status_bed', '=', false)
+                        ->first();
+
+                    if (!$bed) {
+                        return response()->json([
+                            'status' => true,
+                            'message' => 'Não há mais leitos, espere a liberação para proseguir',
+                            'data' => $patient
+                        ], 200);
+                    }
+
+                    $bed->user_id = $patient->user->id;
+                    $bed->status_bed = true;
+                    $bed->updated_at = Carbon::now();
+                    $bed->save();
                 }
 
-                $bed->user_id = $patient->user->id;
-                $bed->status_bed = true;
-                $bed->updated_at = Carbon::now();
-                $bed->save();
-            }
-
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Paciente criado com sucesso',
+                    'data' => $patient
+                ], 201);
+            });
+        } catch (PatientException $e) {
             return response()->json([
-                'status' => true,
-                'message' => 'Paciente criado com sucesso',
-                'data' => $patient
-            ], 201);
-        });
+                'status' => false,
+                'message' => 'Erro ao criar paciente',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
 
     /**
      * Display the specified resource.

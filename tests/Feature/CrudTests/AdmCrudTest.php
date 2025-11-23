@@ -56,7 +56,7 @@ describe('Testing crud of Model Adm', function () {
         expect($result_post->status())->toBe(201);
         expect($result_post->content())->toBeGreaterThanOrEqual(1);
         expect($result_post->content())->toBeJson();
-        expect(json_decode($result_post->content(), true)['message'])->toBe("Employee created successfully");
+        expect(json_decode($result_post->content(), true)['message'])->toBe("Funcionário criado com sucesso");
 
         // testando se o adm inserido corresponde ao user criado juntamente
         expect(
@@ -84,7 +84,7 @@ describe('Testing crud of Model Adm', function () {
             ->toBe(200);
 
         expect(json_decode($result_put->content(), true)['message'])
-            ->toBe("updated successfully");
+            ->toBe("atualizado com sucesso");
 
 
         // testa se o valor foi modificado

@@ -21,15 +21,15 @@ abstract class Crud extends Controller
                 $modelClass = $relacionamento !== null ?  $modelClass::with($relacionamento)->get() : $modelClass::all();
 
                 if (!$modelClass)
-                    throw new \Exception('Model not found');
+                    throw new \Exception('Modelo não encontrado');
 
                 return response()->json(['status' => true, 'data' => $modelClass], 200);
             } else
-                throw new \Exception('Model not found');
+                throw new \Exception('Modelo não encontrado');
         } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
-            return response()->json(['error' => 'Model not found', 'status' => false, "message" => $e->getMessage()], 404);
+            return response()->json(['error' => 'Modelo não encontrado', 'status' => false, "message" => $e->getMessage()], 404);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred', 'status' => false, "message" => $e->getMessage()], 500);
+            return response()->json(['error' => 'Ocorreu um erro', 'status' => false, "message" => $e->getMessage()], 500);
         }
     }
 
@@ -43,7 +43,7 @@ abstract class Crud extends Controller
                 $modelClass = "App\\Models\\$model";
 
                 if (!class_exists($modelClass)) {
-                    throw new \Exception('Model not found');
+                    throw new \Exception('Modelo não encontrado');
                 }
 
                 $dataValidated = $request->validated();
@@ -67,14 +67,14 @@ abstract class Crud extends Controller
                     $modelInstance  = $modelClass::create($dataValidated);
 
                     if (!$modelInstance) {
-                        throw new \Exception('Error creating Model');
+                        throw new \Exception('Erro ao criar Modelo');
                     }
                 } else {
-                    throw new \Exception('Error creating User');
+                    throw new \Exception('Erro ao criar Usuário');
                 };
             });
 
-            return response()->json(['status' => 'success', 'message' => 'Employee created successfully'], 201);
+            return response()->json(['status' => 'success', 'message' => 'Funcionário criado com sucesso'], 201);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
@@ -90,7 +90,7 @@ abstract class Crud extends Controller
             return response()->json(['status' => true, 'data' => $result], 200);
         }
 
-        return response()->json(['error' => 'Model not found', 'status' => false], 404);
+        return response()->json(['error' => 'Modelo não encontrado', 'status' => false], 404);
     }
 
     /**
@@ -112,13 +112,13 @@ abstract class Crud extends Controller
             if (User::find($user_id)->update($dataValidated)) {
 
                 if ($model->update($dataValidated)) {
-                    return response()->json(['status' => true, 'message' => 'updated successfully', 'data' => $model->load('user')], 200);
+                    return response()->json(['status' => true, 'message' => 'atualizado com sucesso', 'data' => $model->load('user')], 200);
                 } else
-                    throw new \Exception("Error updating Adm {$this->$model->id}");
+                    throw new \Exception("Erro ao atualizar Adm {$this->$model->id}");
             } else
-                throw new \Exception("Error updating User $user_id");
+                throw new \Exception("Erro ao atualizar Usuário $user_id");
         } catch (\Exception $e) {
-            return response()->json(['status' => false, 'message' => 'Error updating Adm 3', 'error' => $e->getMessage()], 500);
+            return response()->json(['status' => false, 'message' => 'Erro ao atualizar Adm', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -130,7 +130,7 @@ abstract class Crud extends Controller
         try {
             DB::transaction(function () use ($model) {
                 if (!$model || !$model['id']) {
-                    throw new \Exception("Invalid model or user ID");
+                    throw new \Exception("Modelo ou ID de usuário inválido");
                 }
 
                 if ($model['flag'] === 0) {
@@ -140,16 +140,16 @@ abstract class Crud extends Controller
                 }
 
                 if (!$user) {
-                    throw new \Exception("User with ID {$model['id']} not found");
+                    throw new \Exception("Usuário com ID {$model['id']} não encontrado");
                 }
 
                 $user->delete();
                 $model->delete();
             });
 
-            return response()->json(['status' => true, 'message' => 'Model deleted successfully'], 200);
+            return response()->json(['status' => true, 'message' => 'Modelo excluído com sucesso'], 200);
         } catch (\Exception $e) {
-            return response()->json(['status' => false, 'message' => 'Error deleting model', 'error' => $e->getMessage()], 500);
+            return response()->json(['status' => false, 'message' => 'Erro ao excluir modelo', 'error' => $e->getMessage()], 500);
         }
     }
 

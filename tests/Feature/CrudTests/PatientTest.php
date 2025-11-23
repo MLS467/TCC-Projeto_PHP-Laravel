@@ -106,7 +106,7 @@ describe('Check if crud of patient is ok', function () {
         $result_put_array = json_decode($result_put->content(), true);
 
 
-        expect($result_put_array['message'])->toBe("updated successfully");
+        expect($result_put_array['message'])->toBe("atualizado com sucesso");
         expect($result_put_array['data']['oxygen_saturation'])->toBe(22);
         expect($result_put_array)->toBeArray();
 
@@ -121,7 +121,7 @@ describe('Check if crud of patient is ok', function () {
 
         $result_delete_array = json_decode($result_delete->content(), true);
 
-        expect($result_delete_array["message"])->toBe("Model deleted successfully");
+        expect($result_delete_array["message"])->toBe("Modelo excluído com sucesso");
 
         expect(PatientModel::where('id', 1)->exists())->toBeFalse();
     });

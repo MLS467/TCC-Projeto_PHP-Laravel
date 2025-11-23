@@ -26,7 +26,7 @@ class UserController extends Crud
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error fetching users',
+                'message' => 'Erro ao buscar usuários',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -48,13 +48,13 @@ class UserController extends Crud
 
             return response()->json([
                 'status' => true,
-                'message' => 'User created successfully',
+                'message' => 'Usuário criado com sucesso',
                 'data' => $user
             ], 201);
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error fetching user',
+                'message' => 'Erro ao criar usuário',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -73,13 +73,13 @@ class UserController extends Crud
 
             return response()->json([
                 'status' => true,
-                'message' => 'User fetched successfully',
+                'message' => 'Usuário encontrado com sucesso',
                 'data' => $data
             ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error fetching user',
+                'message' => 'Erro ao buscar usuário',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -100,7 +100,7 @@ class UserController extends Crud
             if ($user) {
                 return response()->json([
                     'status' => true,
-                    'message' => 'User updated successfully',
+                    'message' => 'Usuário atualizado com sucesso',
                     'data' => $user
                 ], 200);
             }
@@ -109,7 +109,7 @@ class UserController extends Crud
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error updating user',
+                'message' => 'Erro ao atualizar usuário',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -129,12 +129,12 @@ class UserController extends Crud
 
             return response()->json([
                 'status' => true,
-                'message' => 'User deleted successfully'
+                'message' => 'Usuário excluído com sucesso'
             ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error deleting user',
+                'message' => 'Erro ao excluir usuário',
                 'error' => $e->getMessage()
             ], 500);
         }
