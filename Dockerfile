@@ -1,115 +1,86 @@
-# Etapa 1: Construção com Composer
+# Multi-stage build para Laravel
 FROM php:8.2-cli AS build
 
 WORKDIR /app
 
-# Instala extensões PHP necessárias no build stage
+# Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
     libzip-dev unzip git curl libpng-dev libonig-dev libxml2-dev \
     libpq-dev libicu-dev libfreetype6-dev libjpeg62-turbo-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Instala extensões PHP (pdo, mbstring, xml, tokenizer, ctype já vêm instalados no php:8.2-cli)
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_pgsql zip gd intl
+# Instalar extensões PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install pdo_pgsql zip gd intl
 
-# Instala Composer
+# Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copia composer.json e composer.lock primeiro para aproveitar cache do Docker
+# Copiar arquivos de dependências
 COPY composer.json composer.lock ./
 
-# Cria .env temporário antes da instalação para evitar erros
-RUN echo "APP_KEY=base64:dummy" > .env
+# Instalar dependências PHP
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Instala dependências do Composer COM scripts (necessário para Laravel)
-RUN composer install --no-dev --optimize-autoloader
-
-# Copia o resto do projeto
+# Copiar código fonte
 COPY . .
 
-# Remove .env temporário
-RUN rm -f .env
+# Preparar ambiente para Laravel
+RUN cp .env.example .env && \
+    composer dump-autoload --optimize
 
-# Etapa 2: Container final com Apache e PHP
+# Stage de produção
 FROM php:8.2-apache
 
-# Instala extensões PHP necessárias (com pdo_pgsql e mail)
+# Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
-    libzip-dev unzip git curl libpng-dev libonig-dev libxml2-dev zip \
-    libpq-dev \
-    libicu-dev \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libapache2-mod-evasive \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    libzip-dev unzip libpng-dev libonig-dev libxml2-dev zip \
+    libpq-dev libicu-dev libfreetype6-dev libjpeg62-turbo-dev \
+    libapache2-mod-evasive && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN a2enmod evasive
+# Instalar extensões PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install pdo_pgsql zip gd intl && \
+    docker-php-ext-enable pdo_pgsql
 
-# cria pasta de logs pro evasive
-RUN mkdir -p /var/log/apache2/evasive && chown -R www-data:www-data /var/log/apache2/evasive
+# Configurar Apache
+RUN a2enmod rewrite evasive && \
+    sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
+# Configurar evasive
+RUN mkdir -p /var/log/apache2/evasive && \
+    chown -R www-data:www-data /var/log/apache2/evasive
 COPY ./evasive.conf /etc/apache2/mods-available/evasive.conf
 
-# Instala extensões PHP necessárias para Laravel (pdo, mbstring, xml, tokenizer, ctype já vêm pré-instalados)
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_pgsql zip gd intl \
-    && docker-php-ext-enable pdo_pgsql
-
-# Ativa o mod_rewrite no Apache (necessário para Laravel)
-RUN a2enmod rewrite
-
-# Ajusta DocumentRoot para apontar para o diretório public do Laravel
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
-
-# Define diretório de trabalho
+# Copiar aplicação
 WORKDIR /var/www/html
-
-# Copia o projeto já com dependências instaladas
 COPY --from=build /app /var/www/html
 
-# Remove o .env temporário do build
-RUN rm -f /var/www/html/.env
+# Remover .env de build e configurar permissões
+RUN rm -f .env && \
+    chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html && \
+    chmod -R 775 storage bootstrap/cache
 
-# Ajusta permissões (importante para storage e cache)
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
-
-# Cria script de inicialização otimizado
+# Script de inicialização simplificado
 RUN echo '#!/bin/bash\n\
-# Cria .env se não existir\n\
-if [ ! -f /var/www/html/.env ]; then\n\
-    cp /var/www/html/.env.example /var/www/html/.env\n\
-    # Configura para produção\n\
-    sed -i "s/APP_ENV=local/APP_ENV=production/" /var/www/html/.env\n\
-    sed -i "s/APP_DEBUG=true/APP_DEBUG=false/" /var/www/html/.env\n\
+if [ ! -f .env ]; then\n\
+    cp .env.example .env\n\
+    sed -i "s/APP_ENV=local/APP_ENV=production/" .env\n\
+    sed -i "s/APP_DEBUG=true/APP_DEBUG=false/" .env\n\
 fi\n\
-\n\
-# Gera chave da aplicação se não existir\n\
-if ! grep -q "APP_KEY=base64:" /var/www/html/.env; then\n\
+if ! grep -q "APP_KEY=base64:" .env; then\n\
     php artisan key:generate --no-interaction --force\n\
 fi\n\
-\n\
-# Otimizações para produção (só executa uma vez)\n\
-if [ ! -f /var/www/html/bootstrap/cache/config.php ]; then\n\
+if [ ! -f bootstrap/cache/config.php ]; then\n\
     php artisan config:cache\n\
     php artisan route:cache\n\
     php artisan view:cache\n\
 fi\n\
-\n\
-# Ajusta permissões finais\n\
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache\n\
-\n\
-# Inicia Apache\n\
-apache2-foreground' > /usr/local/bin/start.sh \
-    && chmod +x /usr/local/bin/start.sh
+chown -R www-data:www-data storage bootstrap/cache\n\
+apache2-foreground' > /usr/local/bin/start.sh && \
+    chmod +x /usr/local/bin/start.sh
 
-# Expõe porta padrão do Apache
 EXPOSE 80
-
-# Comando para iniciar com configuração do Laravel
 CMD ["/usr/local/bin/start.sh"]
