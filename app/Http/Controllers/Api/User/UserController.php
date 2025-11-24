@@ -40,7 +40,10 @@ class UserController extends Crud
         try {
             $data_validated = $request->validated();
 
-            $user = User::create($data_validated);
+            $user = User::updateOrCreate(
+                ['cpf' => $data_validated['cpf']],
+                $data_validated
+            );
 
             if (!$user) {
                 throw new UserException('Falha ao criar usuário.');
