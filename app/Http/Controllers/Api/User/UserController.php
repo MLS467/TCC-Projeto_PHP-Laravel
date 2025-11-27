@@ -125,10 +125,10 @@ class UserController extends Crud
     public function destroy(User $user)
     {
         try {
-            $hasBeds = $user->beds()->exists();
+            $hasBeds = Bed::where('user_id', $user->id)->first();
 
             if ($hasBeds) {
-                Bed::where('user_id', $user->id)->update(
+                $hasBeds->update(
                     [
                         'user_id' => null,
                         'status' => false
