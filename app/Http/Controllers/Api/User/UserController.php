@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Abstract\Crud;
 use App\Http\Requests\UserStoredRequest;
 use App\Http\Service\GeneralService;
 use App\Http\traits\UploadImagemTrait;
+use App\Models\Bed;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
@@ -124,6 +125,17 @@ class UserController extends Crud
     public function destroy(User $user)
     {
         try {
+            $hasBeds = $user->beds()->exists();
+
+            if ($hasBeds) {
+                Bed::where('user_id', $user->id)->update(
+                    [
+                        'user_id' => null,
+                        'status' => false
+                    ]
+                );
+            }
+
             $data = $this->destroyGlobal($user);
 
             if (!$data) {
