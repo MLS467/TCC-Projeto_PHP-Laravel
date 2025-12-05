@@ -32,7 +32,7 @@ function createPatient($user_id)
     ]);
 }
 
-function createUser()
+function createUser($role = null)
 {
     return User::create([
         'name' => \Faker\Factory::create()->name(),
@@ -50,7 +50,7 @@ function createUser()
         'street' => \Faker\Factory::create()->streetName(),
         'block' => \Faker\Factory::create()->buildingNumber(),
         'apartment' => \Faker\Factory::create()->word(),
-        'role' => \Faker\Factory::create()->randomElement(['admin', 'patient', 'attendant', 'doctor', 'nurse']),
+        'role' => $role ?? \Faker\Factory::create()->randomElement(['admin', 'attendant', 'nurse', 'doctor', 'patient']),
         'age' => \Faker\Factory::create()->numberBetween(18, 99),
     ]);
 }
@@ -140,4 +140,16 @@ function createPatientRecord($cpf)
         'diagnosis' => 'Cefaleia tensional',
         'additional_notes' => 'Retorno em 7 dias se persistir sintomas',
     ]);
+};
+
+function chooseRole($abreviation)
+{
+    $roles = [
+        'adm' => 'admin',
+        'att' => 'attendant',
+        'nur' => 'nurse',
+        'doc' => 'doctor',
+        'pat' => 'patient'
+    ];
+    return $roles[$abreviation];
 };

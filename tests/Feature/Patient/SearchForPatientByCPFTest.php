@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\PatientModel;
+
 describe('testing return and structure of seach user by CPF', function () {
 
     it('testing return using CPF of user', function () {
@@ -10,18 +12,20 @@ describe('testing return and structure of seach user by CPF', function () {
         $attendant_user = createUser();
         $attendant = createAttendant($attendant_user->id, $admin->id);
 
-        $patient_user = createUser();
+        $patient_user = createUser(chooseRole('pat'));
         $patient = createPatient($patient_user->id);
 
         auth()->loginUsingId($attendant->user->id);
 
         $token = auth()->user()->createToken('token')->plainTextToken;
 
+
         $result = $this->withHeaders([
             'Authorization' => "Bearer " . $token
         ])->get('api/user/cpf/' . $patient_user->cpf);
 
         expect($result->content())->toBeJson();
+
         expect($result->status())->toBe(200);
         expect($result->content())->toBeGreaterThan(1);
 

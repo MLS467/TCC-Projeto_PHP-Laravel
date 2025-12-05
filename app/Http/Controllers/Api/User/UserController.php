@@ -138,7 +138,9 @@ class UserController extends Crud
                 );
             }
 
-            $data = $this->destroyGlobal($user);
+            $data = $user->update([
+                "flag" => 40028922
+            ]);
 
             if (!$data) {
                 throw new UserException('Erro ao deletar usuário.', 500);
