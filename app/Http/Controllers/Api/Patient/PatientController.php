@@ -113,8 +113,19 @@ class PatientController extends Crud
     {
         try {
 
-            $patient->delete();
+            $bed_exists = Bed::where('user_id', $patient->user->id);
+
+            if ($bed_exists->exists()) {
+                $bed = $bed_exists->first();
+                $bed->user_id = null;
+                $bed->status_bed = false;
+                $bed->updated_at = Carbon::now();
+                $bed->save();
+            }
+
             $patient->user->update(['flag' => 40028922]);
+
+            $patient->delete();
 
             return response()->json([
                 'status' => true,
