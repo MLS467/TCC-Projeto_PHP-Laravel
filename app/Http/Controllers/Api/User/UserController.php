@@ -5,13 +5,12 @@ namespace App\Http\Controllers\Api\User;
 use App\Exceptions\UserException;
 use App\Http\Controllers\Api\Abstract\Crud;
 use App\Http\Requests\UserStoredRequest;
-use App\Http\Service\GeneralService;
 use App\Http\traits\UploadImagemTrait;
 use App\Models\Bed;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends Crud
 {
@@ -20,7 +19,7 @@ class UserController extends Crud
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         try {
             return $this->indexGlobal('User');
@@ -36,7 +35,7 @@ class UserController extends Crud
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserStoredRequest $request)
+    public function store(UserStoredRequest $request): JsonResponse
     {
         try {
             $data_validated = $request->validated();
@@ -67,7 +66,7 @@ class UserController extends Crud
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(User $user): JsonResponse
     {
         try {
             $data = $this->showGlobal($user);
@@ -94,11 +93,14 @@ class UserController extends Crud
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): JsonResponse
     {
+
+
         try {
             $user = User::findOrFail($id);
             $photo_name = $this->uploadImagem($request);
+
             $user->update(array_merge($request->all(), ['photo' => $photo_name]));
 
             if ($user) {
@@ -122,7 +124,7 @@ class UserController extends Crud
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user): JsonResponse
     {
         try {
             $hasBeds = Bed::where('user_id', $user->id)->first();

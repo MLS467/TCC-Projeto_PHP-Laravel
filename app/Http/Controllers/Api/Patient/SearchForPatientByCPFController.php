@@ -12,7 +12,9 @@ class SearchForPatientByCPFController extends Controller
     {
         try {
 
-            $user = User::where('cpf', $cpf)->get();
+            $user = User::where('cpf', $cpf)
+                ->where('role', 'patient')
+                ->get();
 
             if (!$user->isEmpty()) {
                 return response()->json([
