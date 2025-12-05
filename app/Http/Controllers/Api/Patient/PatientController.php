@@ -12,6 +12,7 @@ use App\Models\Bed;
 use App\Models\PatientModel as Patient;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class PatientController extends Crud
@@ -108,8 +109,23 @@ class PatientController extends Crud
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Patient $patient)
+    public function destroy(Patient $patient): JsonResponse
     {
-        return $this->destroyGlobal($patient);
+        try {
+
+            $patient->delete();
+            $patient->user->update(['flag' => 40028922]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Paciente deletado com sucesso'
+            ], 200);
+        } catch (PatientException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Erro ao deletar paciente',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
