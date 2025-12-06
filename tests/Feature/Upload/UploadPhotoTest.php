@@ -29,7 +29,7 @@ describe("check flow of upload photo is correct and photo url is stored in datab
         expect($user_data[0]['photo'])->not->toBeNull();
 
         expect($user_data[0]['photo'])->toContain('https://res.cloudinary.com/dyyiewmgy');
-    })->skip('para não criar muitas imagens no cloudinary');
+    });
 
     it('check if upload of photo is correct with value empty', function () {
 
@@ -45,7 +45,7 @@ describe("check flow of upload photo is correct and photo url is stored in datab
         expect($user_data[0]['name'])->toBe('Lucas Almeida');
 
         expect($user_data[0]['photo'])->toContain("https://res.cloudinary.com/dyyiewmgy/image/upload/");
-    })->skip('para não criar muitas imagens no cloudinary');
+    });
 
     it('check if upload of photo is correct with value wrong', function () {
 
@@ -58,7 +58,7 @@ describe("check flow of upload photo is correct and photo url is stored in datab
         expect($response->content())->toBeJson();
 
         expect($response->content())->toContain("A foto deve ser uma imagem.");
-    })->skip('para não criar muitas imagens no cloudinary');
+    });
 
     it('check if upload of photo is correct with value great then 4096 Kb', function () {
 
@@ -72,7 +72,7 @@ describe("check flow of upload photo is correct and photo url is stored in datab
         expect($response->content())->toBeJson();
 
         expect($response->content())->toContain("A foto n\u00e3o pode ter mais de 4096 KB.");
-    })->skip('para não criar muitas imagens no cloudinary');
+    });
 });
 
 function LoginAsAttendantAndGetToken($test, $file)

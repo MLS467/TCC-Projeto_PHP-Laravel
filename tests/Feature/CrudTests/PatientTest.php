@@ -121,7 +121,7 @@ describe('Check if crud of patient is ok', function () {
 
         $result_delete_array = json_decode($result_delete->content(), true);
 
-        expect($result_delete_array["message"])->toBe("Modelo excluído com sucesso");
+        expect($result_delete_array["message"])->toBe("Paciente deletado com sucesso");
 
         expect(PatientModel::where('id', 1)->exists())->toBeFalse();
     });
