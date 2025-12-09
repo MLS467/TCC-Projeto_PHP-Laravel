@@ -28,7 +28,7 @@ class UserStoredRequest extends FormRequest
             'email_verified_at' => 'nullable|date',
             'password' => 'required|string|min:8',
             'phone' => 'required|regex:/^\d{10,15}$/',
-            'cpf' => 'required|regex:/^\d{11}$/|unique:users,cpf',
+            'cpf' => 'required|regex:/^\d{11}$/',
             'sex' => 'required|in:masculino,feminino,outro',
             'birth' => 'required|date',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
