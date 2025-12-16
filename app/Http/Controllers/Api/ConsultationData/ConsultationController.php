@@ -41,6 +41,8 @@ class ConsultationController extends Controller
             return DB::transaction(function () use ($request) {
                 $validatedData = $request->validated();
 
+                $validatedData['id_doctor'] = auth()->user()->id;
+
                 $consultation = Consultation::create($validatedData);
 
                 $updatePatientFlag = PatientModel::where('id', $validatedData['patient_id'])

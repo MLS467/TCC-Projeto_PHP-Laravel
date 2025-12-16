@@ -21,6 +21,7 @@ class Consultation extends Model
         'diagnosis',
         'additional_notes',
         'patient_id',
-        'flag_consultation'
+        'flag_consultation',
+        'id_doctor'
     ];
 }
