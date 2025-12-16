@@ -41,7 +41,7 @@ class ConsultationController extends Controller
             return DB::transaction(function () use ($request) {
                 $validatedData = $request->validated();
 
-                $validatedData['id_doctor'] = auth()->user()->id;
+                $validatedData['id_doctor'] = auth()->user()->doctor->id;
 
                 $consultation = Consultation::create($validatedData);
 
